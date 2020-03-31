@@ -1,0 +1,23 @@
+{
+  "name": "hadron-animator",
+  "version": "1.0.0",
+  "description": "An animation tool made using JS.",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HJfod/hadron-animator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HJfod/hadron-animator/issues"
+  },
+  "homepage": "https://github.com/HJfod/hadron-animator#readme",
+  "dependencies": {
+    "electron": "^8.2.0",
+    "jquery": "^3.4.1"
+  }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hadron</title>
+    <meta charset='UTF-8' />
+    <script src='scripts/main.js' defer></script>
+    <link rel="stylesheet" href="scripts/main.css" />
+</head>
+<body>
+
+    <app-settings app-name="Hadron" text-color="var(--text-color)" font="var(--font)" main-color="var(--main-color)" extra-color="var(--extra-color)" shadow-color="var(--shadow-color)" dark-color="var(--dark-color)" darker-color="var(--darker-color)"></app-settings>
+
+    <app-titlebar name="Hadron" background-color="var(--titlebar-color)" text-color="var(--text-color)"></app-titlebar>
+
+    <app-main>
+
+        <app-group direction="top-down">
+
+            <app-panel size="50px">
+
+                <p>Tools</p>
+
+            </app-panel>
+
+            <app-group direction="left-right">
+
+                <app-panel>
+
+                    <canvas id="animation_preview" width="1920" height="1080" class="animation_preview"></canvas>
+
+                </app-panel>
+
+                <app-dragger></app-dragger>
+
+                <app-panel size="150px">
+
+                    <p>Sidepanel</p>
+
+                </app-panel>
+
+            </app-group>
+
+            <app-dragger></app-dragger>
+            
+            <app-group size="200px" direction="top-down">
+
+                <app-panel>
+
+                    <p>Timeline</p>
+
+                </app-panel>
+
+            </app-group>
+
+        </app-group>
+
+    </app-main>
+
+</body>
+</html>

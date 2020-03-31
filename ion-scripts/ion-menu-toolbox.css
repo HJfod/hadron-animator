@@ -1,0 +1,36 @@
+.app-contextmenu {
+    background-color: var(--ion-app-menu-background-color);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    position: absolute;
+    box-shadow: 0px 0px var(--ion-app-shadow-size) var(--ion-app-shadow-color);
+}
+
+.app-contextmenu-option {
+    background-color: rgba(0,0,0,0);
+    border: none;
+    color: var(--ion-app-menu-option-text-color);
+    font-family: var(--ion-app-font);
+    font-size: var(--ion-app-menu-option-text-size);
+    display: flex;
+    height: var(--ion-app-menu-option-height);
+    padding-left: var(--ion-app-menu-option-pad);
+    padding-right: var(--ion-app-menu-option-pad);
+    transition-duration: var(--ion-app-transition-duration);
+}
+
+.app-contextmenu-option:hover {
+    background-color: var(--ion-app-menu-option-hover-color);
+}
+
+app-tooltip {
+    background-color: var(--ion-app-menu-background-color);
+    color: var(--ion-app-menu-option-text-color);
+    font-size: var(--ion-app-menu-option-text-size);
+    position: absolute;
+    padding: var(--ion-app-menu-option-pad);
+    box-shadow: 0px 0px var(--ion-app-shadow-size) var(--ion-app-shadow-color);
+    font-family: var(--ion-app-font);
+    user-select: none;
+}

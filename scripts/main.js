@@ -1,0 +1,1 @@
+require(require('path').join(__dirname + '/ion-scripts/ion-render.js'));

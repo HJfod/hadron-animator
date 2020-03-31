@@ -1,0 +1,19 @@
+:root {
+    --text-color:                   #fff;
+    --font:                         Segoe UI Light;
+    --main-color:                   #000;
+    --extra-color:                  #f0a;
+    --shadow-color:                 rgba(255,255,255,0.2);
+    --dark-color:                   #624;
+    --darker-color:                 #222;
+    --titlebar-color:               linear-gradient(to right, #624, #653);
+    --margin:                       10px;
+}
+
+.animation_preview {
+    background-color: var(--darker-color);
+    width: 600px;
+    margin-left: var(--margin);
+    margin-top: var(--margin);
+    display: flex;
+}
