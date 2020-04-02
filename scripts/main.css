@@ -8,12 +8,22 @@
     --darker-color:                 #222;
     --titlebar-color:               linear-gradient(to right, #624, #653);
     --margin:                       10px;
+    --preview-panel-width:          150px;
+    --preview-panel-height:         200px;
 }
 
 .animation_preview {
     background-color: var(--darker-color);
-    width: 600px;
-    margin-left: var(--margin);
+    margin-left: calc( 10% + var(--margin) );
     margin-top: var(--margin);
+    width: 60%;
+    position: absolute;
+    max-width: calc( 80% - var(--preview-panel-width) - var(--margin) * 2 );
+}
+
+.canvas-block {
     display: flex;
+    margin-left: 0px;
+    margin-top: 0px;
+    height: var(--preview-panel-height);
 }

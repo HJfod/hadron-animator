@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>Hadron</title>
@@ -16,7 +16,7 @@
 
         <app-group direction="top-down">
 
-            <app-panel size="50px">
+            <app-panel size="50px" min-size="50px">
 
                 <p>Tools</p>
 
@@ -28,9 +28,11 @@
 
                     <canvas id="animation_preview" width="1920" height="1080" class="animation_preview"></canvas>
 
+                    <div class="canvas-block"></div>
+
                 </app-panel>
 
-                <app-dragger></app-dragger>
+                <app-dragger affect="--preview-panel-width"></app-dragger>
 
                 <app-panel size="150px">
 
@@ -40,7 +42,7 @@
 
             </app-group>
 
-            <app-dragger></app-dragger>
+            <app-dragger affect="--preview-panel-height"></app-dragger>
             
             <app-group size="200px" direction="top-down">
 

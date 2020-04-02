@@ -273,6 +273,13 @@ function dragging(e, o, p, offset, w, h) {
         }
     }
 
+    if (e.hasAttribute('affect')) {
+        let a;
+        e.getAttribute('class') == 'app-dragger left-right' ? a = o.style.width : a = o.style.height;
+        console.log(a);
+        ion_html.style.setProperty(e.getAttribute('affect'), a);
+    }
+
     dragger_click = setTimeout(() => { if (dragger_click != null) { dragging(e, o, p, offset, w, h) } }, 1 );
 }
 
