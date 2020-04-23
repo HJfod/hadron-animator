@@ -13,6 +13,7 @@ let grid = false;
 let snap = false;
 let playing = false;
 let mouse_x, mouse_y;
+let layers = [{ name: 'Master', contents: [] }, { name: 'test', contents: [] }, { name: 'bitch', contents: [] }];
 
 $('input[type=range]').on('input', (e) => {
     $(`[data-link=${$(e.target).attr('data-link')}]`).text($(e.target).val());
@@ -29,7 +30,8 @@ const sett = {
     ratio: 4 / 3,
     tl_size: 32,
     tl_fnt_sz: 16,
-    v_lgt: 1
+    v_lgt: 1,
+    layer_size: 96
 }
 
 function arr(list) {
@@ -45,7 +47,7 @@ function getCSS(v) {
     }
 }
 
-function CSSVarColorLuminance(hex, lum) {	// thanks sitepoint.com
+function colorLuminance(hex, lum) {	// thanks sitepoint.com
 
     // validate hex string
     hex = String(hex).replace(/[^0-9a-f]/gi, '');
@@ -77,16 +79,6 @@ function toggle_grid() {
 function toggle_snap() {
     snap ? snap = false : snap = true;
     $('#t_snap').toggleClass('toggled');
-}
-
-function play() {
-    if (playing) {
-        playing = false;
-        $('#b_play').html('&#9654;');
-    } else {
-        playing = true;
-        $('#b_play').html('&#10074;&#10074;');
-    }
 }
 
 function resize_grid(o) {

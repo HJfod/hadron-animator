@@ -22,6 +22,16 @@ function draw_grid() {
     }
 }
 
+function play() {
+    if (playing) {
+        playing = false;
+        $('#b_play').html('&#9654;');
+    } else {
+        playing = true;
+        $('#b_play').html('&#10074;&#10074;');
+    }
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     tl_ctx.clearRect(0, 0, tl_can.width, tl_can.height);
