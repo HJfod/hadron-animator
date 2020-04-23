@@ -5,6 +5,7 @@
     <meta charset='UTF-8' />
     <script src='scripts/main.js' defer></script>
     <script src='scripts/menu.js' defer></script>
+    <script src='scripts/time.js' defer></script>
     <script src='scripts/anim.js' defer></script>
     <link rel="stylesheet" href="scripts/main.css" />
 </head>
@@ -22,7 +23,7 @@
 
             <button onclick="toggle_grid()" id="t_grid" class="toggle">Toggle grid</button>
 
-            <input type="range" min="0" max="4" value="1" step="1" class="slider" data-slide="resize_grid(event)" data-link="s_grid"><text data-link="s_grid" class="input_val">1</text>
+            <input type="range" min="0" max="4" value="2" step="1" class="slider" data-slide="resize_grid(event)" data-link="s_grid"><text data-link="s_grid" class="input_val"></text>
 
         </div>
 
@@ -42,11 +43,11 @@
 
             <button onclick="toggle_snap()" id="t_snap" class="toggle">Snap</button>
 
-            <input type="range" min="0" max="4" value="1" step="1" class="slider" data-slide="change_framerate(event)" data-link="s_frame"><text data-link="s_frame" class="input_val">1</text>
+            <input type="range" min="3" max="100" value="32" step="1" class="slider" data-slide="change_time(event)" data-link="s_frame"><text data-link="s_frame" class="input_val"></text>
 
             <div class="timeline_container">
 
-                <canvas class="a_timeline" width="1920" height="200"></canvas>
+                <canvas class="a_timeline" id="timeline" width="1920" height="200"></canvas>
 
             </div>
 

@@ -24,10 +24,16 @@ function draw_grid() {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    tl_ctx.clearRect(0, 0, tl_can.width, tl_can.height);
 
     draw_grid();
+
+    draw_timeline();
 
     requestAnimationFrame(draw);
 }
 
 draw();
+
+change_time('s_frame');
+resize_grid('s_grid');

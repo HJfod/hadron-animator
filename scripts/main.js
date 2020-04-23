@@ -6,22 +6,43 @@ const html = document.documentElement;
 const canvas = document.getElementById('preview');
 const ctx = canvas.getContext('2d');
 
+const tl_can = document.getElementById('timeline');
+const tl_ctx = tl_can.getContext('2d');
+
 let grid = false;
 let snap = false;
 let playing = false;
+let mouse_x, mouse_y;
 
 $('input[type=range]').on('input', (e) => {
     $(`[data-link=${$(e.target).attr('data-link')}]`).text($(e.target).val());
     eval($(e.target).attr('data-slide').toString().replace('event',`'${$(e.target).attr('data-link')}'`));
 });
 
+$(document).mousemove((e) => {
+    mouse_x = e.pageX;
+    mouse_y = e.pageY;
+});
+
 const sett = {
     grid_size: 16,
-    ratio: 4/3
+    ratio: 4 / 3,
+    tl_size: 32,
+    tl_fnt_sz: 16,
+    v_lgt: 1
 }
 
 function arr(list) {
     return Array.prototype.slice.call(list);
+}
+
+function getCSS(v) {
+    let g = (getComputedStyle(html).getPropertyValue(v)).replace('px', '');
+    if (isNaN(g)) {
+        return g;
+    } else {
+        return Number(g);
+    }
 }
 
 function CSSVarColorLuminance(hex, lum) {	// thanks sitepoint.com
@@ -43,11 +64,6 @@ function CSSVarColorLuminance(hex, lum) {	// thanks sitepoint.com
 
     return rgb;
 }
-
-$(document).mousemove((e) => {
-    mouse_x = e.pageX;
-    mouse_y = e.pageY;
-});
 
 function add(o) {
     

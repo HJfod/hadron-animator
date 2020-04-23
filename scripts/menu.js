@@ -108,8 +108,8 @@ function open_contextmenu(menu, x = null, y = null, level = 0) {
     $(m).css('top', mey + 'px').css('left', mex + 'px');
 
     add.forEach((item, index) => {
-        let i = Number((getComputedStyle(html).getPropertyValue('--s-menu')).replace('px', ''));
-        let si = Number((getComputedStyle(html).getPropertyValue('--pad-small')).replace('px', '')) * 2;
+        let i = getCSS('--s-menu');
+        let si = getCSS('--pad-small') * 2;
 
         item.b.setAttribute('onmouseup', `open_contextmenu("${item.a}",${mex + mw + si},${mey + item.i * i},${level + 1})`);
     });
