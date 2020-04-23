@@ -47,3 +47,8 @@ draw();
 
 change_time('s_frame');
 resize_grid('s_grid');
+
+$(`[data-link=${$('[data-link=s_frame]').attr('data-link')}]`).text($('[data-link=s_frame]').val());
+$(`[data-link=${$('[data-link=s_grid]').attr('data-link')}]`).text($('[data-link=s_grid]').val());
+
+$('#del_layer').hide();

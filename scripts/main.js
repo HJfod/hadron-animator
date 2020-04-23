@@ -13,7 +13,10 @@ let grid = false;
 let snap = false;
 let playing = false;
 let mouse_x, mouse_y;
-let layers = [{ name: 'Master', contents: [] }, { name: 'test', contents: [] }, { name: 'bitch', contents: [] }];
+let selected;
+let layers = [
+    { name: 'Master', contents: [] }
+];
 
 $('input[type=range]').on('input', (e) => {
     $(`[data-link=${$(e.target).attr('data-link')}]`).text($(e.target).val());
@@ -31,7 +34,8 @@ const sett = {
     tl_size: 32,
     tl_fnt_sz: 16,
     v_lgt: 1,
-    layer_size: 96
+    layer_size: 96,
+    layer_limit: 10
 }
 
 function arr(list) {
