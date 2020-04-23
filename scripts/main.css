@@ -1,29 +1,225 @@
 :root {
-    --text-color:                   #fff;
-    --font:                         Segoe UI Light;
-    --main-color:                   #000;
-    --extra-color:                  #f0a;
-    --shadow-color:                 rgba(255,255,255,0.2);
-    --dark-color:                   #624;
-    --darker-color:                 #222;
-    --titlebar-color:               linear-gradient(to right, #624, #653);
-    --margin:                       10px;
-    --preview-panel-width:          150px;
-    --preview-panel-height:         200px;
+    --c-lightest:       #fff;
+    --c-light:          #ddd;
+    --c-mid:            #bbb;
+    --c-dark:           #666;
+    --c-darkest:        #000;
+    --c-no:             #f44;
+    --c-no-light:       #faa;
+    --c-yes:            #4f4;
+    --c-yes-light:      #afa;
+    --c-shadow:         rgba(0,0,0,0.5);
+
+    --h-prev:           300px;
+
+    --w-slider:         100px;
+
+    --s-button:         30px;
+    --s-click:          2px;
+    --s-shadow:         6px;
+    --s-menu:           30px;
+
+    --pad:              20px;
+    --pad-small:        8px;
+    --font:             Segoe UI Light;
+    --font-bold:        Segoe UI;
+    --trans:            0.1s;
+    --corner:           3px;
+    --corner-big:       8px;
+}
+
+body {
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+    font-family: var(--font);
+    background-color: var(--c-lightest);
+}
+
+
+
+button {
+    height: var(--s-button);
+    border: none;
+    background-color: var(--c-light);
+    transition-duration: var(--trans);
+    padding-left: var(--pad-small);
+    padding-right: var(--pad-small);
+    padding-top: 0px;
+    padding-bottom: 0px;
+    font-family: var(--font-bold);
+    color: var(--c-darkest);
+    font-size: calc( var(--s-button) / 2 );
+    border: 0px solid var(--c-lightest);
+    box-sizing: border-box;
+    border-radius: var(--corner);
+}
+
+button:hover {
+    background-color: var(--c-mid);
+}
+
+button:focus {
+    outline: none;
+}
+
+button:active {
+    border: var(--s-click) solid var(--c-lightest);
+    border-radius: calc( var(--corner) * 2);
+    padding-left: calc(var(--pad-small) - var(--s-click));
+    padding-right: calc(var(--pad-small) - var(--s-click));
+    font-size: calc( var(--s-button) / 2 - var(--s-click) );
+}
+
+
+
+.toggle {
+    background-color: var(--c-no);
+    color: var(--c-lightest);
+}
+
+.toggle:hover {
+    background-color: var(--c-no-light);
+}
+
+.toggle.toggled {
+    background-color: var(--c-yes);
+    color: var(--c-darkest);
+}
+
+.toggle.toggled:hover {
+    background-color: var(--c-yes-light);
+}
+
+
+
+.slider {
+    -webkit-appearance: none;
+    width: var(--w-slider);
+    height: calc( var(--s-button) / 4 );
+    background: var(--c-mid);
+    outline: none;
+    opacity: 1;
+    transition: var(--trans);
+}
+
+.slider:hover > .slider::-webkit-slider-thumb{
+    background: var(--c-dark);
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: calc( var(--s-button) / 1.5 );
+    height: calc( var(--s-button) / 1.5 );
+    background: var(--c-light);
+    cursor: pointer;
+    border-radius: 100%;
+}
+
+.input_val {
+    font-size: calc( var(--s-button) / 2 );
+    margin-left: calc( var(--pad-small) / 2 );
+}
+
+
+
+.panel.tools {
+    padding: var(--pad-small);
+}
+
+.panel.preview {
+    width: 100%;
+    background-color: var(--c-light);
+    padding-top: var(--pad);
+    padding-bottom: var(--pad);
+    height: calc( 100% - var(--h-prev));
+}
+
+.panel.timeline {
+    padding: var(--pad-small);
 }
 
 .animation_preview {
-    background-color: var(--darker-color);
-    margin-left: calc( 10% + var(--margin) );
-    margin-top: var(--margin);
-    width: 60%;
+    background-color: var(--c-darkest);
+    height: calc( 100% - var(--h-prev));
+    max-width: calc( 100% - var(--pad) * 2 );
+    margin-left: 50%;
+    transform: translate(-50%, 0%);
     position: absolute;
-    max-width: calc( 80% - var(--preview-panel-width) - var(--margin) * 2 );
 }
 
-.canvas-block {
+
+
+.timeline_container {
+    overflow: scroll;
+    position: absolute;
+    height: calc( var(--h-prev) - ( var(--pad) * 8 ) );
+    width: calc( 100% - ( var(--pad) * 2 ) );
+    margin-top: var(--pad);
+    margin-left: var(--pad);
+    background-color: var(--c-light);
+}
+
+.a_timeline {
+    background-color: var(--c-dark);
+    color: var(--c-lightest);
+}
+
+.keyframe:active {
+    border: none;
+    font-size: calc( var(--s-button) / 2 );
+    padding-left: var(--pad-small);
+    padding-right: var(--pad-small);
+}
+
+
+
+app-main {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.app-contextmenu {
+    background-color: var(--c-lightest);
     display: flex;
-    margin-left: 0px;
-    margin-top: 0px;
-    height: var(--preview-panel-height);
+    flex-direction: column;
+    flex-wrap: wrap;
+    position: absolute;
+    box-shadow: 0px 0px var(--s-shadow) var(--c-shadow);
+    padding: var(--pad-small);
+    border-radius: var(--corner-big);
+}
+
+.app-contextmenu-option {
+    background-color: rgba(0,0,0,0);
+    border: none;
+    color: var(--c-darkest);
+    font-family: var(--font);
+    font-size: calc( var(--s-menu) / 2 );
+    display: flex;
+    height: var(--s-menu);
+    padding: var(--pad-small);
+    transition-duration: var(--trans);
+}
+
+.app-contextmenu-option:hover {
+    background-color: var(--c-light);
+}
+
+.app-contextmenu-option:active {
+    border: none;
+    padding-left: calc( var(--pad-small) * 1.31 );
+    padding-right: calc( var(--pad-small) * 1.31 );
+}
+
+app-tooltip {
+    background-color: var(--c-mid);
+    color: var(--c-lightest);
+    font-size: var(--s-menu);
+    position: absolute;
+    padding: var(--pad-small);
+    box-shadow: 0px 0px var(--s-shadow) var(--c-shadow);
+    font-family: var(--font);
+    user-select: none;
 }

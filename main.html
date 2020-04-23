@@ -4,57 +4,55 @@
     <title>Hadron</title>
     <meta charset='UTF-8' />
     <script src='scripts/main.js' defer></script>
+    <script src='scripts/menu.js' defer></script>
+    <script src='scripts/anim.js' defer></script>
     <link rel="stylesheet" href="scripts/main.css" />
 </head>
 <body>
 
-    <app-settings app-name="Hadron" text-color="var(--text-color)" font="var(--font)" main-color="var(--main-color)" extra-color="var(--extra-color)" shadow-color="var(--shadow-color)" dark-color="var(--dark-color)" darker-color="var(--darker-color)"></app-settings>
-
-    <app-titlebar name="Hadron" background-color="var(--titlebar-color)" text-color="var(--text-color)"></app-titlebar>
-
     <app-main>
 
-        <app-group direction="top-down">
+        <div id="div_tools" class="panel tools">
 
-            <app-panel size="50px" min-size="50px">
+            <button onclick="open_contextmenu('Line=>;Shape=>')" data-menu="Line=>;Shape=>">Add object</button>
 
-                <p>Tools</p>
+            <button onclick="add('image')">Add image</button>
 
-            </app-panel>
+            <button onclick="add('text')">Add text</button>
 
-            <app-group direction="left-right">
+            <button onclick="toggle_grid()" id="t_grid" class="toggle">Toggle grid</button>
 
-                <app-panel>
+            <input type="range" min="0" max="4" value="1" step="1" class="slider" data-slide="resize_grid(event)" data-link="s_grid"><text data-link="s_grid" class="input_val">1</text>
 
-                    <canvas id="animation_preview" width="1920" height="1080" class="animation_preview"></canvas>
+        </div>
 
-                    <div class="canvas-block"></div>
+        <div id="div_preview" class="panel preview">
 
-                </app-panel>
+            <canvas id="preview" class="animation_preview" width=1920 height=1080></canvas>
 
-                <app-dragger affect="--preview-panel-width"></app-dragger>
+        </div>
 
-                <app-panel size="150px">
+        <div id="div_timeline" class="panel timeline">
 
-                    <p>Sidepanel</p>
+            <button onclick="play()" id="b_play">&#9654;</button>
 
-                </app-panel>
+            <button>&#9632;</button>
 
-            </app-group>
+            <button>Add layer</button>
 
-            <app-dragger affect="--preview-panel-height"></app-dragger>
-            
-            <app-group size="200px" direction="top-down">
+            <button onclick="toggle_snap()" id="t_snap" class="toggle">Snap</button>
 
-                <app-panel>
+            <input type="range" min="0" max="4" value="1" step="1" class="slider" data-slide="change_framerate(event)" data-link="s_frame"><text data-link="s_frame" class="input_val">1</text>
 
-                    <p>Timeline</p>
+            <div class="timeline_container">
 
-                </app-panel>
+                <canvas class="a_timeline" width="1920" height="200"></canvas>
 
-            </app-group>
+            </div>
 
-        </app-group>
+        </div>
+
+        <div class="app-contextmenu"></div>
 
     </app-main>
 

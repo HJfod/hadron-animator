@@ -1,9 +1,8 @@
-﻿let app_tip_timeout = 1000;
+let app_tip_timeout = 1000;
 
-
-ion_$('[data-menu]').contextmenu((e) => {
+$('[data-menu]').contextmenu((e) => {
     e.preventDefault();
-    let ta = ion_$(e.target);
+    let ta = $(e.target);
 
     let i = 0;
     while (ta.attr('data-menu') == undefined) {
@@ -22,7 +21,7 @@ function open_contextmenu(menu, x = null, y = null, level = 0) {
     let e = arr(document.getElementsByClassName('app-contextmenu'));
     e.forEach((item, index) => {
         if (Number(item.getAttribute('level')) >= Number(level)) {
-            ion_$(item).remove();
+            $(item).remove();
         }
     });
 
@@ -36,7 +35,7 @@ function open_contextmenu(menu, x = null, y = null, level = 0) {
     let collect = '';
 
     if (sub.startsWith('{')) {
-        sub = sub.substring(1, sub.length-1);
+        sub = sub.substring(1, sub.length - 1);
     }
 
     while (sub.length > 0) {
@@ -75,7 +74,7 @@ function open_contextmenu(menu, x = null, y = null, level = 0) {
         button.setAttribute('class', 'app-contextmenu-option');
         button.innerHTML = text[i].split('=>').shift();
 
-        let action = text[i].substring(text[i].split('=>').shift().length+2);
+        let action = text[i].substring(text[i].split('=>').shift().length + 2);
 
         if (action) {
             if (action.startsWith('{')) {
@@ -90,7 +89,7 @@ function open_contextmenu(menu, x = null, y = null, level = 0) {
 
     document.body.appendChild(m);
 
-    let mex = mouse_x, mey = mouse_y, mw = Number(ion_$(m).css('width').replace('px', '')), mh = Number(ion_$(m).css('height').replace('px', ''));
+    let mex = mouse_x, mey = mouse_y, mw = Number($(m).css('width').replace('px', '')), mh = Number($(m).css('height').replace('px', ''));
 
     if ((x && y) !== null) {
         mex = x;
@@ -105,13 +104,14 @@ function open_contextmenu(menu, x = null, y = null, level = 0) {
     }
 
     // console.log(mex + ',' + mey);
-    
-    ion_$(m).css('top', mey + 'px').css('left', mex + 'px');
-    
-    add.forEach((item, index) => {
-        let i = Number((getComputedStyle(ion_html).getPropertyValue('--ion-app-menu-option-height')).replace('px',''));
 
-        item.b.setAttribute('onmouseup', `open_contextmenu("${item.a}",${mex + mw},${mey + item.i * i},${level + 1})`);
+    $(m).css('top', mey + 'px').css('left', mex + 'px');
+
+    add.forEach((item, index) => {
+        let i = Number((getComputedStyle(html).getPropertyValue('--s-menu')).replace('px', ''));
+        let si = Number((getComputedStyle(html).getPropertyValue('--pad-small')).replace('px', '')) * 2;
+
+        item.b.setAttribute('onmouseup', `open_contextmenu("${item.a}",${mex + mw + si},${mey + item.i * i},${level + 1})`);
     });
 }
 
@@ -119,20 +119,20 @@ function close_menu(click = false) {
     let hover = false;
     let e = arr(document.getElementsByClassName('app-contextmenu'));
     e.forEach((item, index) => {
-        if (ion_$(item).is(':hover')) {
+        if ($(item).is(':hover')) {
             hover = true;
         }
     });
     if (!hover || click) {
-        ion_$('.app-contextmenu').remove();
+        $('.app-contextmenu').remove();
     }
 }
 
 let tip_timeout;
 let current_tip = null;
 
-ion_$('[data-tip]').mouseover((e) => {
-    let ta = ion_$(e.target);
+$('[data-tip]').mouseover((e) => {
+    let ta = $(e.target);
 
     let i = 0;
     while (ta.attr('data-tip') == undefined) {
@@ -149,17 +149,17 @@ ion_$('[data-tip]').mouseover((e) => {
     current_tip = null;
 });
 
-ion_$(document).mousemove(() => {
+$(document).mousemove(() => {
     let e = arr(document.getElementsByTagName('app-tooltip'));
     e.forEach((item, index) => {
-        ion_$(item).remove();
+        $(item).remove();
     });
     clearTimeout(tip_timeout);
     tip_timeout = setTimeout(() => {
         if (current_tip !== null) {
             let tip = document.createElement('app-tooltip');
-            ion_$(tip).text(current_tip);
-            let mex = mouse_x, mey = mouse_y, mw = Number(ion_$(tip).css('width').replace('px', '')), mh = Number(ion_$(tip).css('height').replace('px', ''));
+            $(tip).text(current_tip);
+            let mex = mouse_x, mey = mouse_y, mw = Number($(tip).css('width').replace('px', '')), mh = Number($(tip).css('height').replace('px', ''));
 
             if (mex > window.innerWidth - mw) {
                 mex = mex - mw;
@@ -168,15 +168,13 @@ ion_$(document).mousemove(() => {
                 mey = mey - mh;
             }
 
-            ion_$(tip).css('top', mey + 'px').css('left', mex + 'px');
+            $(tip).css('top', mey + 'px').css('left', mex + 'px');
 
             document.body.appendChild(tip);
         }
     }, app_tip_timeout);
 });
 
-ion_$(document).mouseup((e) => {
+$(document).mouseup((e) => {
     close_menu();
-    drag_off(e);
-    app_slider_stop_move(e);
 });
