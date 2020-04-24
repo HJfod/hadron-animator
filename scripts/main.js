@@ -31,11 +31,12 @@ $(document).mousemove((e) => {
 const sett = {
     grid_size: 16,
     ratio: 4 / 3,
-    tl_size: 32,
+    tl_size: 40,
     tl_fnt_sz: 16,
-    v_lgt: 1,
+    v_lgt: 10,
     layer_size: 96,
-    layer_limit: 10
+    layer_limit: 10,
+    tl_snap: 8
 }
 
 function arr(list) {

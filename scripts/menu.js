@@ -5,7 +5,7 @@ $('[data-menu]').contextmenu((e) => {
     let ta = $(e.target);
 
     let i = 0;
-    while (ta.attr('data-menu') == undefined) {
+    while (ta.attr('data-menu') == undefined || ta.attr('data-menu') === '') {
         if (i < 50) {
             i++;
         } else {
