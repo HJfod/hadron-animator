@@ -1,10 +1,11 @@
 const { BrowserWindow, app, Menu } = require('electron');
 const ipc = require('electron').ipcMain;
+const path = require('path');
 
 let w;
 
 app.on('ready', () => {
-    w = new BrowserWindow({ frame: false, minHeight: 400, webPreferences: { nodeIntegration: true } });
+    w = new BrowserWindow({ frame: true, minHeight: 400, webPreferences: { nodeIntegration: false } });
 
     w.loadFile('main.html');
 
@@ -48,9 +49,9 @@ const temp = [
 				click() {
 					let o = {
 						action: 'new-file'
-                    }
+					}
 					w.webContents.send('app', JSON.stringify(o));
-                }
+				}
 			},
 			{
 				label: 'Save File',
@@ -92,7 +93,7 @@ const temp = [
 						action: 'new-object'
 					}
 					w.webContents.send('app', JSON.stringify(o));
-                }
+				}
 			},
 			{
 				label: 'Add image',
@@ -112,10 +113,10 @@ const temp = [
 						action: 'toggle-grid'
 					}
 					w.webContents.send('app', JSON.stringify(o));
-                }
-            }
+				}
+			}
 		]
-    },
+	},
 	{
 		label: 'Help',
 		submenu: [
@@ -132,7 +133,7 @@ const temp = [
 				click() {
 					w.toggleDevTools();
 				}
-            }
+			}
 		]
 	}
 ];

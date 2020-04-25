@@ -3,13 +3,14 @@
 <head>
     <title>Hadron</title>
     <meta charset='UTF-8' />
-    <script src='scripts/meth.js' defer></script>
-    <script src='scripts/main.js' defer></script>
-    <script src='scripts/main.js' defer></script>
-    <script src='scripts/menu.js' defer></script>
-    <script src='scripts/time.js' defer></script>
-    <script src='scripts/anim.js' defer></script>
-    <link rel="stylesheet" href="scripts/main.css" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self';">
+    <script src='scripts/frontend/meth.js' defer></script>
+    <script src='scripts/frontend/main.js' defer></script>
+    <script src='scripts/frontend/elem.js' defer></script>
+    <script src='scripts/frontend/menu.js' defer></script>
+    <script src='scripts/frontend/time.js' defer></script>
+    <script src='scripts/frontend/anim.js' defer></script>
+    <link rel="stylesheet" href="scripts/frontend/main.css" />
 </head>
 <body>
 
@@ -29,7 +30,7 @@
 
             <button onclick="toggle_grid()" id="t_grid" class="toggle">Toggle grid</button>
 
-            <input type="range" min="0" max="4" value="1" step="1" class="slider" data-slide="resize_grid(event)" data-link="s_grid"><text data-link="s_grid" class="input_val"></text>
+            <input type="range" min="0" max="4" value="1" step="1" class="slider" oninput="handleSliderInput(event); resize_grid(event)" data-link="s_grid"><text data-link="s_grid" class="input_val"></text>
 
         </div>
 

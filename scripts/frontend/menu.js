@@ -4,26 +4,26 @@ let app_tip_timeout = 1000;
 
 $('[data-menu]').contextmenu((e) => {
     e.preventDefault();
-    let ta = e.target;
+    let ta = $(e.target);
 
     let i = 0;
-    while (ta.getAttribute('data-menu') == undefined || ta.getAttribute('data-menu') === '') {
+    while (ta.attr('data-menu') == undefined || ta.attr('data-menu') === '') {
         if (i < 50) {
             i++;
         } else {
             return false;
         }
-        ta = ta.parentElement;
+        ta = ta.parent();
     }
 
-    open_contextmenu(ta.getAttribute('data-menu'));
+    open_contextmenu(ta.attr('data-menu'));
 });
 
 function open_contextmenu(menu, x = null, y = null, level = 0, cut_top = false, is_menu = false) {
     let e = arr(document.getElementsByClassName('app-contextmenu'));
     e.forEach((item, index) => {
         if (Number(item.getAttribute('level')) >= Number(level)) {
-            item.parentElement.removeChild(item);
+            $(item).remove();
         }
     });
 
@@ -88,8 +88,7 @@ function open_contextmenu(menu, x = null, y = null, level = 0, cut_top = false, 
             button.innerHTML = txt + (args.indexOf('#') < 0 ? '' : ('\u2003').repeat(Math.round(args.split('#').pop().replace(']', '').length / 3)) + '\u2003');
             if (args.indexOf('#') > -1) {
                 let scut = document.createElement('text');
-                scut.classList.add('app-contextmenu-shortcut');
-                scut.innerText = args.split('#').pop().replace(']', '');
+                $(scut).addClass('app-contextmenu-shortcut').text(args.split('#').pop().replace(']',''));
                 m.appendChild(scut);
             }
 
@@ -101,15 +100,14 @@ function open_contextmenu(menu, x = null, y = null, level = 0, cut_top = false, 
                 button.innerHTML = button.innerHTML + '\u2003';
 
                 let arrow = document.createElement('text');
-                arrow.classList.add('app-contextmenu-arrow');
-                arrow.innerText = '\u25b8';
+                $(arrow).addClass('app-contextmenu-arrow').text('\u25b8');
                 m.appendChild(arrow);
             } else {
                 button.setAttribute('onmouseup', `${(args.indexOf('noclose') < 0) ? 'close_menu(true);' : ''} ${action}`);
             }
         } else {
             button = document.createElement('div');
-            button.classList.add('app-contextmenu-separator');
+            $(button).addClass('app-contextmenu-separator');
         }
 
         m.appendChild(button);
@@ -117,7 +115,7 @@ function open_contextmenu(menu, x = null, y = null, level = 0, cut_top = false, 
 
     document.body.appendChild(m);
 
-    let mex = mouse_x, mey = mouse_y, mw = Number(m.style.width.replace('px', '')), mh = Number(m.style.height.replace('px', ''));
+    let mex = mouse_x, mey = mouse_y, mw = Number($(m).css('width').replace('px', '')), mh = Number($(m).css('height').replace('px', ''));
 
     if (x !== null) {
         mex = x;
@@ -135,8 +133,7 @@ function open_contextmenu(menu, x = null, y = null, level = 0, cut_top = false, 
 
     // console.log(mex + ',' + mey);
 
-    m.style.top = mey + 'px';
-    m.style.left = mex - getCSS('--pad-small') + 'px';
+    $(m).css('top', mey + 'px').css('left', mex - getCSS('--pad-small') + 'px');
 
     add.forEach((item, index) => {
         let i = getCSS('--s-menu');
@@ -150,13 +147,12 @@ function close_menu(click = false) {
     let hover = false;
     let e = arr(document.getElementsByClassName('app-contextmenu'));
     e.forEach((item, index) => {
-        if (item.querySelector(':hover')) {
+        if ($(item).is(':hover')) {
             hover = true;
         }
     });
     if (!hover || click) {
-        let acm = document.getElementsByClassName('app-contextmenu')[0];
-        acm.parentElement.removeChild(acm);
+        $('.app-contextmenu').remove();
     }
 }
 
@@ -181,10 +177,10 @@ $('[data-tip]').mouseover((e) => {
     current_tip = null;
 });
 
-document.addEventListener('mousemove', (e) => {
+$(document).mousemove(() => {
     let e = arr(document.getElementsByTagName('app-tooltip'));
     e.forEach((item, index) => {
-        item.parentElement.removeChild(item);
+        $(item).remove();
     });
     clearTimeout(tip_timeout);
     tip_timeout = setTimeout(() => {
