@@ -9,8 +9,10 @@
     --c-yes:            #9f4;
     --c-yes-light:      #afa;
     --c-shadow:         rgba(0,0,0,0.5);
+    --c-titlebar:       #e4e8f4;
+    --c-hover:          rgba(0,0,0,0.1);
 
-    --h-prev:           300px;
+    --h-prev:           400px;
 
     --w-slider:         100px;
 
@@ -18,6 +20,8 @@
     --s-click:          2px;
     --s-shadow:         6px;
     --s-menu:           30px;
+    --s-titlebar:       28px;
+    --s-drag:           12px;
 
     --pad:              20px;
     --pad-small:        8px;
@@ -132,7 +136,7 @@ button:active {
     background-color: var(--c-light);
     padding-top: var(--pad);
     padding-bottom: var(--pad);
-    height: calc( 100% - var(--h-prev));
+    height: calc( 100% - var(--h-prev) - var(--s-titlebar));
 }
 
 .panel.timeline {
@@ -141,7 +145,7 @@ button:active {
 
 .animation_preview {
     background-color: var(--c-darkest);
-    height: calc( 100% - var(--h-prev));
+    height: calc( 100% - var(--h-prev) - var(--s-titlebar));
     max-width: calc( 100% - var(--pad) * 2 );
     margin-left: 50%;
     transform: translate(-50%, 0%);
@@ -174,6 +178,119 @@ button:active {
 
 
 
+app-head {
+    width: 100%;
+    height: var(--s-titlebar);
+    background-color: var(--c-titlebar);
+    display: flex;
+    -webkit-app-region: drag;
+    font-size: calc( var(--s-titlebar) / 1.9 );
+    z-index: 25;
+    color: var(--c-darkest);
+    position: relative;
+}
+
+.app-head-shadow {
+    position: absolute;
+    z-index: 15;
+    width: 100%;
+    height: var(--s-titlebar);
+    top: 0px;
+    left: 0px;
+    background-color: var(--c-shadow);
+    box-shadow: 0px 0px var(--s-shadow) var(--c-shadow);
+}
+
+.app-home-button {
+    background-color: rgba(0,0,0,0);
+    color: inherit;
+    margin-top: 0px;
+    text-align: center;
+    font-family: var(--font);
+    font-size: inherit;
+    width: var(--s-titlebar);
+    height: var(--s-titlebar);
+    border: none;
+    -webkit-app-region: no-drag;
+    transition-duration: var(--trans);
+    margin-left: 0px;
+    margin-right: auto;
+    justify-content: flex-start;
+    padding-left: calc( var(--s-titlebar) / 6 );
+    padding-right: calc( var(--s-titlebar) / 6 );
+}
+
+.app-home-button.close {
+    margin-right: 0px;
+}
+
+.app-home-button.fs {
+    margin-right: 0px;
+}
+
+.app-home-button.mz {
+    margin-right: 0px;
+}
+
+.app-home-disabled {
+    color: var(--c-dark);
+}
+
+.app-home-button:not(.app-home-disabled):hover {
+    background-color: var(--c-hover);
+}
+
+.app-home-button:focus {
+    outline: none;
+}
+
+.app-home-button.menu {
+    width: initial;
+    color: inherit;
+    margin-left: 0px;
+    margin-right: auto;
+    align-self: flex-start;
+}
+
+.app-home-button.close:hover {
+    background-color: var(--c-no);
+}
+
+.app-home-button:active {
+    border: none;
+    font-size: inherit;
+    padding-left: calc( var(--s-titlebar) / 6 );
+    padding-right: calc( var(--s-titlebar) / 6 );
+}
+
+.app-home-buffer {
+    width: 100%;
+}
+
+.app-home-title {
+    margin-top: calc( var(--s-titlebar) / 6 );
+    margin-left: calc( var(--s-titlebar) / 4 );
+    margin-right: auto;
+    width: calc( var(--s-titlebar) * 3 );
+    align-self: flex-start;
+    font-size: inherit;
+    font-family: var(--font);
+    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
+}
+
+.app-home-logo {
+    margin-top: calc( var(--s-titlebar) / 8 );
+    margin-left: calc( var(--s-titlebar) / 8 );
+    margin-right: auto;
+    width: calc( var(--s-titlebar) / (4/3) );
+    align-self: flex-start;
+    white-space: nowrap;
+    user-select: none;
+}
+
 app-main {
     width: 100%;
     height: 100%;
@@ -189,22 +306,70 @@ app-main {
     box-shadow: 0px 0px var(--s-shadow) var(--c-shadow);
     padding: var(--pad-small);
     border-radius: var(--corner-big);
+    z-index: 20;
+    color: var(--c-darkest);
+}
+
+.app-contextmenu.top {
+    border-radius: 0px 0px var(--corner-big) var(--corner-big);
+}
+
+.app-contextmenu.ismenu {
+    background-color: var(--c-titlebar);
 }
 
 .app-contextmenu-option {
     background-color: rgba(0,0,0,0);
     border: none;
-    color: var(--c-darkest);
+    color: inherit;
     font-family: var(--font);
     font-size: calc( var(--s-menu) / 2 );
     display: flex;
     height: var(--s-menu);
-    padding: var(--pad-small);
+    padding-left: var(--pad-small);
+    padding-right: var(--pad-small);
     transition-duration: var(--trans);
 }
 
+.app-contextmenu-separator {
+    background-color: var(--c-hover);
+    display: flex;
+    height: 1px;
+    width: calc( 100% - var(--pad-small) );
+    margin-top: 4px;
+    padding-left: var(--pad-small);
+    transition-duration: var(--trans);
+}
+
+.app-contextmenu-arrow {
+    opacity: 0.2;
+    display: flex;
+    height: 0px;
+    margin-left: auto;
+    margin-right: 0px;
+    font-family: var(--font);
+    font-size: calc( var(--s-menu) / 1.4 );
+    color: inherit;
+    user-select: none;
+    pointer-events: none;
+}
+
+.app-contextmenu-shortcut {
+    opacity: 0.6;
+    display: flex;
+    height: 0px;
+    margin-left: auto;
+    margin-right: calc( var(--s-menu) / 6 );
+    font-family: var(--font);
+    font-size: calc( var(--s-menu) / 2.5 );
+    color: inherit;
+    user-select: none;
+    pointer-events: none;
+    transform: translate(0px, calc( var(--s-menu) / 4 ) );
+}
+
 .app-contextmenu-option:hover {
-    background-color: var(--c-light);
+    background-color: var(--c-hover);
 }
 
 .app-contextmenu-option:active {
@@ -222,4 +387,28 @@ app-tooltip {
     box-shadow: 0px 0px var(--s-shadow) var(--c-shadow);
     font-family: var(--font);
     user-select: none;
+}
+
+app-dragger {
+    background-color: rgb(255,0,0);
+    display: inherit;
+    opacity: 0;
+    z-index: 20;
+    margin: calc( 0px - calc(var(--s-drag) / 2 ) );
+}
+
+.app-dragger.left-right {
+    width: var(--s-drag);
+}
+
+.app-dragger.left-right:hover {
+    cursor: ew-resize;
+}
+
+.app-dragger.top-down {
+    height: var(--s-drag);
+}
+
+.app-dragger.top-down:hover {
+    cursor: ns-resize;
 }

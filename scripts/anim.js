@@ -1,3 +1,5 @@
+/// animations
+
 function draw_grid() {
     if (grid) {
         ctx.fillStyle = getCSS('--c-lightest');
@@ -58,3 +60,7 @@ $(`[data-link=${$('[data-link=s_grid]').attr('data-link')}]`).text($('[data-link
 $('#del_layer').hide();
 
 deselect();
+
+document.getElementById('timeline').height = window.innerHeight;
+
+sett.layer_limit = (window.innerHeight - sett.tl_fnt_sz * 3) / sett.tl_fnt_sz;

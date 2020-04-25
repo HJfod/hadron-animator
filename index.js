@@ -4,7 +4,7 @@ const ipc = require('electron').ipcMain;
 let w;
 
 app.on('ready', () => {
-    w = new BrowserWindow({ frame: true, minHeight: 400, webPreferences: { nodeIntegration: true } });
+    w = new BrowserWindow({ frame: false, minHeight: 400, webPreferences: { nodeIntegration: true } });
 
     w.loadFile('main.html');
 
@@ -18,7 +18,23 @@ app.on('ready', () => {
 ipc.on('app', (event, arg) => {
 	arg = JSON.parse(arg);
 	switch (arg.action) {
-		
+		case 'fs':
+			let win = BrowserWindow.fromId(Number(arg.val));
+			if (win.isMaximized()) {
+				win.unmaximize();
+			} else {
+				win.maximize();
+			}
+			break;
+		case 'mz':
+			BrowserWindow.fromId(Number(arg.val)).minimize();
+			break;
+		case 'w_reload':
+			w.reload();
+			break;
+		case 'toggle_dev':
+			w.toggleDevTools();
+			break;
 	}
 });
 
@@ -90,6 +106,7 @@ const temp = [
 			{ type: 'separator' },
 			{
 				label: 'Toggle grid',
+				accelerator: 'Ctrl+G',
 				click() {
 					let o = {
 						action: 'toggle-grid'
@@ -119,3 +136,12 @@ const temp = [
 		]
 	}
 ];
+
+/*
+ * TODO:
+ * 
+ * -Remove jQuery
+ * -Switch vars and functions to camelCase
+ * -Move all node shit to backend
+ * -Move shit to their own files
+*/

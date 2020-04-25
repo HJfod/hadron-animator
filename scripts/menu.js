@@ -1,3 +1,5 @@
+/// menus
+
 let app_tip_timeout = 1000;
 
 $('[data-menu]').contextmenu((e) => {
@@ -17,7 +19,7 @@ $('[data-menu]').contextmenu((e) => {
     open_contextmenu(ta.attr('data-menu'));
 });
 
-function open_contextmenu(menu, x = null, y = null, level = 0) {
+function open_contextmenu(menu, x = null, y = null, level = 0, cut_top = false, is_menu = false) {
     let e = arr(document.getElementsByClassName('app-contextmenu'));
     e.forEach((item, index) => {
         if (Number(item.getAttribute('level')) >= Number(level)) {
@@ -26,7 +28,7 @@ function open_contextmenu(menu, x = null, y = null, level = 0) {
     });
 
     let m = document.createElement('div');
-    m.setAttribute('class', 'app-contextmenu');
+    m.setAttribute('class', `app-contextmenu${cut_top ? ' top' : ''}${is_menu ? ' ismenu' : ''}`);
     m.setAttribute('level', level);
 
     let text = [];
@@ -70,18 +72,42 @@ function open_contextmenu(menu, x = null, y = null, level = 0) {
     let add = [];
 
     for (let i in text) {
-        let button = document.createElement('button');
-        button.setAttribute('class', 'app-contextmenu-option');
-        button.innerHTML = text[i].split('=>').shift();
+        let button;
+        if (text[i] !== 'sep') {
+            button = document.createElement('button');
+            button.setAttribute('class', 'app-contextmenu-option');
 
-        let action = text[i].substring(text[i].split('=>').shift().length + 2);
-
-        if (action) {
-            if (action.startsWith('{')) {
-                add[add.length] = { a: action, b: button, i: i };
-            } else {
-                button.setAttribute('onmouseup', 'close_menu(true);' + action);
+            let txt = text[i].split('=>').shift();
+            let args = '';
+            let reg = /\[([^)]+)\]/g;
+            if (txt.search(reg) > -1) {
+                args = txt.match(reg)[0];
             }
+            txt = txt.replace(reg, '');
+
+            button.innerHTML = txt + (args.indexOf('#') < 0 ? '' : ('\u2003').repeat(Math.round(args.split('#').pop().replace(']', '').length / 3)) + '\u2003');
+            if (args.indexOf('#') > -1) {
+                let scut = document.createElement('text');
+                $(scut).addClass('app-contextmenu-shortcut').text(args.split('#').pop().replace(']',''));
+                m.appendChild(scut);
+            }
+
+            let action = text[i].substring(text[i].split('=>').shift().length + 2);
+
+            if (action && action.startsWith('{')) {
+                add[add.length] = { a: action, b: button, i: i };
+
+                button.innerHTML = button.innerHTML + '\u2003';
+
+                let arrow = document.createElement('text');
+                $(arrow).addClass('app-contextmenu-arrow').text('\u25b8');
+                m.appendChild(arrow);
+            } else {
+                button.setAttribute('onmouseup', `${(args.indexOf('noclose') < 0) ? 'close_menu(true);' : ''} ${action}`);
+            }
+        } else {
+            button = document.createElement('div');
+            $(button).addClass('app-contextmenu-separator');
         }
 
         m.appendChild(button);
@@ -91,8 +117,10 @@ function open_contextmenu(menu, x = null, y = null, level = 0) {
 
     let mex = mouse_x, mey = mouse_y, mw = Number($(m).css('width').replace('px', '')), mh = Number($(m).css('height').replace('px', ''));
 
-    if ((x && y) !== null) {
+    if (x !== null) {
         mex = x;
+    }
+    if (y !== null) {
         mey = y;
     }
 
@@ -105,13 +133,13 @@ function open_contextmenu(menu, x = null, y = null, level = 0) {
 
     // console.log(mex + ',' + mey);
 
-    $(m).css('top', mey + 'px').css('left', mex + 'px');
+    $(m).css('top', mey + 'px').css('left', mex - getCSS('--pad-small') + 'px');
 
     add.forEach((item, index) => {
         let i = getCSS('--s-menu');
         let si = getCSS('--pad-small') * 2;
 
-        item.b.setAttribute('onmouseup', `open_contextmenu("${item.a}",${mex + mw + si},${mey + item.i * i},${level + 1})`);
+        item.b.setAttribute('onmouseup', `open_contextmenu("${item.a}",${mex + mw + si},${mey + item.i * i},${level + 1},false,${is_menu})`);
     });
 }
 

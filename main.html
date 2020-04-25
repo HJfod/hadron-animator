@@ -3,6 +3,8 @@
 <head>
     <title>Hadron</title>
     <meta charset='UTF-8' />
+    <script src='scripts/meth.js' defer></script>
+    <script src='scripts/main.js' defer></script>
     <script src='scripts/main.js' defer></script>
     <script src='scripts/menu.js' defer></script>
     <script src='scripts/time.js' defer></script>
@@ -10,6 +12,10 @@
     <link rel="stylesheet" href="scripts/main.css" />
 </head>
 <body>
+
+    <app-head img-src="/resources/placeholder.png"></app-head>
+    
+    <div class="app-head-shadow"></div>
 
     <app-main>
 
@@ -32,6 +38,8 @@
             <canvas id="preview" class="animation_preview" width=1920 height=1080></canvas>
 
         </div>
+
+        <app-dragger direction="down-top" affect="--h-prev"></app-dragger>
 
         <div id="div_timeline" class="panel timeline">
 
