@@ -1,2 +1,2 @@
-# hadron-animator
-An animation tool made using JS.
+# Hadron
+wip animation tool with js
