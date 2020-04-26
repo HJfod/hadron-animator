@@ -1,9 +1,9 @@
 # Hadron
 wip animation tool with js
 
-### requirements:
+### Requirements:
 
-  -dependcies:
+  -dependencies:
 
   * electron v8.2.0
 
