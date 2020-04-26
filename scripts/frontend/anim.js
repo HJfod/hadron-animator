@@ -28,13 +28,16 @@ function drawGrid() {
     }
 }
 
-function play() {
-    if (playing) {
+function play(p = null) {
+    if ((p === null) ? playing : p === false) {
         playing = false;
         document.getElementById('b_play').innerHTML = '&#9654;';
     } else {
         playing = true;
         document.getElementById('b_play').innerHTML = '&#10074;&#10074;';
+        if (frame === sett.videoLength * sett.fps) {
+            frame = 0;
+        }
     }
 }
 

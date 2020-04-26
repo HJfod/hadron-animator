@@ -12,6 +12,7 @@ const tlCtx = tlCanvas.getContext("2d");
 let grid = false;
 let snap = false;
 let playing = false;
+let frame = 0;
 let mouseX, mouseY;
 let selected;
 let draggerClick;
@@ -54,10 +55,11 @@ const sett = {
     ratio: 4 / 3,
     tlSize: 40,
     tlFontSize: 16,
-    videoLength: 10,
+    videoLength: 2,
     layerSize: 96,
     layerLimit: 10,
-    tlSnap: 8
+    tlSnap: 8,
+    fps: 60
 }
 
 function add(o) {

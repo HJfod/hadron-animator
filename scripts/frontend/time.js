@@ -7,6 +7,18 @@ let tcl;
 let tct;
 
 
+function handlePlayer() {
+    if (playing) {
+        if (frame < sett.fps * sett.videoLength) {
+            frame++;
+        } else {
+            play(false);
+        }
+    }
+    tlCtx.fillStyle = getCSS("--c-yes");
+    tlCtx.fillRect(frame * calcTimelineSize() * sett.tlSnap / sett.fps + sett.layerSize, sett.tlFontSize, 2, calcTimelineSize("h") - sett.tlFontSize);
+}
+
 function drawMouse() {
     let x = mx, y = my - sett.tlFontSize * 1.5 + tct;
     tlCtx.fillStyle = getCSS("--c-lightest");
@@ -18,10 +30,16 @@ function drawMouse() {
 
     if (x < sett.layerSize + tl) { return };
 
-    tlCtx.fillRect(x - calcTimelineSize() / 2, sett.tlFontSize + tct, calcTimelineSize(), tlCanvas.height);
-    if (y < sett.tlFontSize * layers.length && y > -sett.tlFontSize) {
-        tlCtx.globalAlpha = 0.3;
-        tlCtx.fillRect(x - calcTimelineSize() / 2, y + sett.tlFontSize, calcTimelineSize(), sett.tlFontSize);
+    if (y > tct - sett.tlFontSize) {
+        tlCtx.fillRect(x - calcTimelineSize() / 2, sett.tlFontSize + tct, calcTimelineSize(), tlCanvas.height);
+        if (y < sett.tlFontSize * layers.length && y > -sett.tlFontSize) {
+            tlCtx.globalAlpha = 0.3;
+            tlCtx.fillRect(x - calcTimelineSize() / 2, y + sett.tlFontSize, calcTimelineSize(), sett.tlFontSize);
+        }
+    } else {
+        tlCtx.globalAlpha = .8;
+        tlCtx.fillStyle = getCSS("--c-yes");
+        tlCtx.fillRect(x - calcTimelineSize() / 2, tct, 2, sett.tlFontSize);
     }
 
     tlCtx.globalAlpha = 1;
@@ -91,6 +109,9 @@ function addLayer(l = false) {
 }
 
 function tlClick() {
+    if (my < tct + sett.tlFontSize) {
+        frame = mx * sett.tlSnap / (calcTimelineSize() / sett.tlSnap / sett.fps + sett.layerSize);
+    }
     for (let i in layers) {
         if (timelineHover("layer",i)) {
             selected = i;
@@ -142,6 +163,7 @@ function drawTimeline() {
     my = mouseY - tch;
 
     drawTime();
+    handlePlayer();
     if (isHover(document.getElementById("timeline"))) {
         drawMouse();
     }
