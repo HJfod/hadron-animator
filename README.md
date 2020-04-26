@@ -5,6 +5,6 @@ wip animation tool with js
 
   -dependcies:
 
-    -electron v8.2.0
+  * electron v8.2.0
 
   -windows because i highly doubt this code works cross-platform
