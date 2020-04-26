@@ -8,20 +8,20 @@ let tct;
 
 
 function drawMouse() {
-    let x = mx - tcl, y = -my + sett.tlFontSize;
+    let x = mx, y = my - sett.tlFontSize * 1.5 + tct;
     tlCtx.fillStyle = getCSS("--c-lightest");
     tlCtx.globalAlpha = 0.1;
     if (snap) {
-        x = Math.round(x / ((tlCanvas.width - sett.layerSize) / (sett.videoLength + 1) / sett.tlSnap)) * ((tlCanvas.width - sett.layerSize) / (sett.videoLength + 1) / sett.tlSnap);
+        x = Math.round((x - sett.layerSize + calcTimelineSize() / 2) / calcTimelineSize()) * calcTimelineSize() + sett.layerSize - calcTimelineSize() / 2;
     }
-    y = Math.round(y / (tlCanvas.height / sett.tlFontSize * 1.28)) * (tlCanvas.height / sett.tlFontSize * 1.28);
+    y = Math.round(y / sett.tlFontSize) * sett.tlFontSize;
 
-    if (x + tlCanvas.width / sett.tlSize / 2 > - sett.layerSize * tlCanvas.tlSnap || x + tlCanvas.width / sett.tlSize - tl < 0) { return };
+    if (x < sett.layerSize + tl) { return };
 
-    tlCtx.fillRect(x, sett.tlFontSize + tct, (tlCanvas.width - sett.layerSize) / (sett.videoLength + 1) / sett.tlSnap, tlCanvas.height);
-    if (y > -sett.tlFontSize * layers.length && y < sett.tlFontSize) {
+    tlCtx.fillRect(x - calcTimelineSize() / 2, sett.tlFontSize + tct, calcTimelineSize(), tlCanvas.height);
+    if (y < sett.tlFontSize * layers.length && y > -sett.tlFontSize) {
         tlCtx.globalAlpha = 0.3;
-        tlCtx.fillRect(x, -y + sett.tlFontSize, (tlCanvas.width - sett.layerSize) / (sett.videoLength + 1) / sett.tlSnap, sett.tlFontSize);
+        tlCtx.fillRect(x - calcTimelineSize() / 2, y + sett.tlFontSize, calcTimelineSize(), sett.tlFontSize);
     }
 
     tlCtx.globalAlpha = 1;
@@ -46,11 +46,11 @@ function drawTime() {
     tlCtx.fillStyle = getCSS("--c-lightest");
     tlCtx.globalAlpha = 0.5;
     for (let i = 0; i < (sett.videoLength + 1) * sett.tlSnap; i += div) {
-        tlCtx.fillRect(i * (tlCanvas.width - sett.layerSize) / (sett.videoLength + 1) / sett.tlSnap + sett.layerSize, 0, 1, tlCanvas.height);
+        tlCtx.fillRect(i * calcTimelineSize() + sett.layerSize, 0, 1, calcTimelineSize("h"));
     }
     tlCtx.globalAlpha = 0.15;
     for (let i = 0; i < (sett.videoLength + 1) * sett.tlSnap; i++) {
-        tlCtx.fillRect(i * (tlCanvas.width - sett.layerSize) / (sett.videoLength + 1) / sett.tlSnap + sett.layerSize, 0, 1, tlCanvas.height);
+        tlCtx.fillRect(i * calcTimelineSize() + sett.layerSize, 0, 1, calcTimelineSize("h"));
     }
     tlCtx.globalAlpha = 1;
 
@@ -60,7 +60,7 @@ function drawTime() {
     tlCtx.fillStyle = getCSS("--c-lightest");
     for (let i = 0; i < (sett.videoLength + 1) * sett.tlSnap; i += div) {
         tlCtx.font = `${sett.tlFontSize / 1.2}px Segoe UI`;
-        tlCtx.fillText(i / sett.tlSnap + "s", i * (tlCanvas.width - sett.layerSize) / (sett.videoLength + 1) / sett.tlSnap + sett.layerSize + sett.tlFontSize / 4, tct + sett.tlFontSize / 1.2);
+        tlCtx.fillText(i / sett.tlSnap + "s", i * calcTimelineSize() + sett.layerSize + sett.tlFontSize / 4, tct + sett.tlFontSize / 1.2);
     }
 
     tlCtx.fillStyle = colorLuminance(getCSS("--c-dark"), -.5);
@@ -68,6 +68,7 @@ function drawTime() {
 
     for (let i in layers) {
         (selected == i) ? tlCtx.fillStyle = colorLuminance(getCSS("--c-yes"), -.4) : tlCtx.fillStyle = colorLuminance(getCSS("--c-dark"), (i % 2 == 0) ? .2 : 0);
+        if (timelineHover("layer",i)) tlCtx.fillStyle = colorLuminance(tlCtx.fillStyle, +.5);
         tlCtx.fillRect(tl, i * sett.tlFontSize + sett.tlFontSize, sett.layerSize, sett.tlFontSize);
         tlCtx.fillStyle = getCSS("--c-lightest");
         tlCtx.fillText(layers[i].name, tl + tcl + sett.tlFontSize / 2, i * sett.tlFontSize + sett.tlFontSize * 1.8);
@@ -91,7 +92,7 @@ function addLayer(l = false) {
 
 function tlClick() {
     for (let i in layers) {
-        if (mx > tl && mx < tl + sett.layerSize && my > i * sett.tlFontSize + sett.tlFontSize / 2 && my < i * sett.tlFontSize + sett.tlFontSize + sett.tlFontSize / 2) {
+        if (timelineHover("layer",i)) {
             selected = i;
             document.getElementById("del_layer").style.display = "initial";
             document.getElementById("timeline").setAttribute("data-menu", "Rename=>;Remove layer=>addLayer(1)");
@@ -101,6 +102,22 @@ function tlClick() {
                 document.getElementById("del_layer").style.display = "none";
             }
         }
+    }
+}
+
+function timelineHover(type, i) {
+    if (type === "layer") {
+        return (mx > tl && mx < tl + sett.layerSize && my + tct > i * sett.tlFontSize + sett.tlFontSize && my + tct < i * sett.tlFontSize + sett.tlFontSize * 2);
+    } else {
+        return false;
+    }
+}
+
+function calcTimelineSize(t = null) {
+    if (t === "h") {
+        return (sett.tlFontSize * layers.length + sett.tlFontSize);
+    } else {
+        return ((tlCanvas.width - sett.layerSize) / (sett.videoLength + 1) / sett.tlSnap);
     }
 }
 
@@ -119,9 +136,10 @@ function drawTimeline() {
     tcl = document.querySelector(".timeline_container").getBoundingClientRect().left;
 
     tct = document.querySelector(".timeline_container").scrollTop;
+    tch = document.querySelector(".timeline_container").getBoundingClientRect().top;
 
     mx = mouseX + tl - tcl;
-    my = -(tct - mouseY - document.querySelector(".timeline_container").scrollHeight + getCSS("--pad") + getCSS("--pad-small"));
+    my = mouseY - tch;
 
     drawTime();
     if (isHover(document.getElementById("timeline"))) {
