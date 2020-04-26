@@ -1,122 +1,144 @@
 /// main
+ipcSend({ action: "get-window-id" });
 
-const $ = require('jquery');
-const remote = require('electron').remote;
-const ipc = require('electron').ipcRenderer;
 const html = document.documentElement;
-const path = require('path');
 
-const canvas = document.getElementById('preview');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById("preview");
+const ctx = canvas.getContext("2d");
 
-const tl_can = document.getElementById('timeline');
-const tl_ctx = tl_can.getContext('2d');
+const tlCanvas = document.getElementById("timeline");
+const tlCtx = tlCanvas.getContext("2d");
 
 let grid = false;
 let snap = false;
 let playing = false;
-let mouse_x, mouse_y;
+let mouseX, mouseY;
 let selected;
-let dragger_click;
+let draggerClick;
+let windowID;
 let layers = [
-    { name: 'Master', contents: [] }
+    { name: "Master", contents: [] }
 ];
 
-$('input[type=range]').on('input', (e) => {
-    $(`[data-link=${$(e.target).attr('data-link')}]`).text($(e.target).val());
-    eval($(e.target).attr('data-slide').toString().replace('event',`'${$(e.target).attr('data-link')}'`));
-});
+function inpSlider(e) {
+    document.querySelector(`text[data-link="${e.getAttribute("data-link")}"]`).innerHTML = e.value;
+};
 
-document.addEventListener('mousemove', (event) => {
-    mouse_x = event.pageX;
-    mouse_y = event.pageY;
+document.addEventListener("mousemove", (event) => {
+    mouseX = event.pageX;
+    mouseY = event.pageY;
 });
-
-document.addEventListener("mouseup", drag_off());
 
 const menu = [
     {
-        name: 'File',
-        menu: 'New[#Ctrl+N]=>;Save[#Ctrl+S]=>;Open[#Ctrl+O]=>;sep;Quit[#Alt+F4]=>window.close()'
+        name: "File",
+        menu: "New[#Ctrl+N]=>;Save[#Ctrl+S]=>;Open[#Ctrl+O]=>;sep;Quit[#Alt+F4]=>window.close()"
     },
     {
-        name: 'Tools',
-        menu: 'Add object=>{Add line=>;Add shape=>;Add particles=>};Add image=>;Add text=>;sep;Toggle grid[noclose#Ctrl+G]=>toggle_grid()'
+        name: "Tools",
+        menu: "Add object=>{Add line=>;Add shape=>;Add particles=>};Add image=>;Add text=>;sep;Toggle grid[noclose#Ctrl+G]=>toggleGrid()"
     },
     {
-        name: 'Window',
-        menu: 'Nested menu=>{Nah=>;No=>;Even nesteder menu=>{Never[#fag]=>;Nestedest menu=>{Finalest nestedest menu=>{awesome sauce=>}};Aldrig=>};Nope=>}'
+        name: "Window",
+        menu: "Theme=>{Dark=>;Light=>;Custom=>};"+
+        "Size=>{50%=>setWindowSize(0.5);75%=>setWindowSize(0.75);100%=>setWindowSize(1);125%=>setWindowSize(1.25);150%=>setWindowSize(1.5);175%=>setWindowSize(1.75);200%=>setWindowSize(2)}"
     },
     {
-        name: 'Help',
-        menu: 'Reload app[#Ctrl+R]=>ipc.send("app",`{"action":"w_reload"}`);Toggle Dev Tools[#Ctrl+Shift+I]=>ipc.send("app",`{"action":"toggle_dev"}`)'
+        name: "Help",
+        menu: `Reload app[#Ctrl+R]=>ipcSend(${JSON.stringify({ action: "w-reload" })});Toggle Dev Tools[#Ctrl+Shift+I]=>ipcSend(${JSON.stringify({ action: "toggle-dev" })});sep;Test IPC=>ipcSend(${JSON.stringify({ action: "return" })})`
     }
 ];
 
 const sett = {
-    grid_size: 16,
+    gridSize: 16,
     ratio: 4 / 3,
-    tl_size: 40,
-    tl_fnt_sz: 16,
-    v_lgt: 10,
-    layer_size: 96,
-    layer_limit: 10,
-    tl_snap: 8
+    tlSize: 40,
+    tlFontSize: 16,
+    videoLength: 10,
+    layerSize: 96,
+    layerLimit: 10,
+    tlSnap: 8
 }
 
 function add(o) {
     
 }
 
-function toggle_grid() {
+function toggleGrid() {
     grid ? grid = false : grid = true;
-    $('#t_grid').toggleClass('toggled');
+    g = document.getElementById("t_grid");
+    if (g.classList.contains("toggled")) {
+        g.classList.remove("toggled");
+    } else {
+        g.classList.add("toggled");
+    }
 }
 
-function toggle_snap() {
+function toggleSnap() {
     snap ? snap = false : snap = true;
-    $('#t_snap').toggleClass('toggled');
+    g = document.getElementById("t_snap");
+    if (g.classList.contains("toggled")) {
+        g.classList.remove("toggled");
+    } else {
+        g.classList.add("toggled");
+    }
 }
 
-function resize_grid(o) {
-    sett.grid_size = Math.pow($(`input[data-link=${o}]`).val() * 4, 2);
+function resizeGrid(e) {
+    sett.gridSize = Math.pow(e.value * 4, 2);
 }
 
-ipc.on('app', (event, arg) => {
-    arg = JSON.parse(arg);
-    switch (arg.action) {
-        case 'toggle-grid':
-            toggle_grid();
-            break;
+function setWindowSize(s) {
+    html.style.setProperty('--scale', s);
+}
+
+window.addEventListener("message", event => {
+    const message = event.data;
+
+    if (message.protocol === "from-app") {
+        let args = JSON.parse(message.data);
+        switch (args.action) {
+            case "toggle-grid":
+                toggleGrid();
+                break;
+            case "window-id":
+                windowID = args.id;
+                document.querySelector(".app-home-button.mz").setAttribute("onclick", `ipcSend(${JSON.stringify({ action: "mz", val: windowID })})`);
+                document.querySelector(".app-home-button.fs").setAttribute("onclick", `ipcSend(${JSON.stringify({ action: "fs", val: windowID })})`);
+                break;
+            case "return":
+                alert(`Received: ${args.text}`);
+                break;
+        }
     }
 });
 
-function drag_on(e) {
+function dragOn(e) {
     e.preventDefault();
     let obj = arr(e.target.parentElement.children);
     let i = obj.indexOf(e.target);
-    let p, m, off = 0, aff = e.target.getAttribute('affect');
+    let p, m, off = 0, aff = e.target.getAttribute("affect");
 
     let w, h;
-    switch (e.target.getAttribute('direction')) {
-        case 'left-right':
+    switch (e.target.getAttribute("direction")) {
+        case "left-right":
             w = getCSS(aff);
-            off = mouse_x;
+            off = mouseX;
             p = 1;
             break;
-        case 'right-left':
+        case "right-left":
             w = getCSS(aff);
-            off = mouse_x;
+            off = mouseX;
             p = 0;
             break;
-        case 'top-down':
+        case "top-down":
             h = getCSS(aff);
-            off = mouse_y;
+            off = mouseY;
             p = 1;
             break;
-        case 'down-top':
+        case "down-top":
             h = getCSS(aff);
-            off = mouse_y;
+            off = mouseY;
             p = 0;
             break;
     }
@@ -126,17 +148,17 @@ function drag_on(e) {
 
 function dragging(e, p, offset, w, h, a) {
     if (w) {
-        html.style.setProperty(a, p ? w - offset + mouse_x + 'px' : w + offset - mouse_x + 'px');
-        document.body.style.cursor = 'ew-resize';
+        html.style.setProperty(a, p ? w - offset + mouseX + "px" : w + offset - mouseX + "px");
+        document.body.style.cursor = "ew-resize";
     } else {
-        html.style.setProperty(a, p ? h - offset + mouse_y + 'px' : h + offset - mouse_y + 'px');
-        document.body.style.cursor = 'ns-resize';
+        html.style.setProperty(a, p ? h - offset + mouseY + "px" : h + offset - mouseY + "px");
+        document.body.style.cursor = "ns-resize";
     }
-    dragger_click = setTimeout(() => { if (dragger_click != null) { dragging(e, p, offset, w, h, a) } }, 1);
+    draggerClick = setTimeout(() => { if (draggerClick != null) { dragging(e, p, offset, w, h, a) } }, 1);
 }
 
-function drag_off(e) {
-    clearTimeout(dragger_click);
-    dragger_click = null;
-    document.body.style.cursor = 'initial';
+function dragOff(e) {
+    clearTimeout(draggerClick);
+    draggerClick = null;
+    document.body.style.cursor = "initial";
 }

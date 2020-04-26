@@ -1,4 +1,6 @@
 :root {
+    --scale:            1;
+
     --c-lightest:       #fff;
     --c-light:          #ddd;
     --c-mid:            #bbb;
@@ -14,17 +16,17 @@
 
     --h-prev:           400px;
 
-    --w-slider:         100px;
+    --w-slider:         calc(100px * var(--scale));
 
-    --s-button:         30px;
-    --s-click:          2px;
-    --s-shadow:         6px;
-    --s-menu:           30px;
-    --s-titlebar:       28px;
+    --s-button:         calc(30px * var(--scale));
+    --s-click:          calc(2px * var(--scale));
+    --s-shadow:         calc(6px * var(--scale));
+    --s-menu:           calc(30px * var(--scale));
+    --s-titlebar:       calc(28px * var(--scale));
     --s-drag:           12px;
 
-    --pad:              20px;
-    --pad-small:        8px;
+    --pad:              calc(20px * var(--scale));
+    --pad-small:        calc(8px * var(--scale));
     --font:             Segoe UI Light;
     --font-bold:        Segoe UI;
     --trans:            0.1s;
@@ -379,14 +381,16 @@ app-main {
 }
 
 app-tooltip {
-    background-color: var(--c-mid);
-    color: var(--c-lightest);
-    font-size: var(--s-menu);
+    background-color: var(--c-lightest);
+    color: var(--c-darkest);
+    font-size: calc( var(--s-menu) / 2 );
     position: absolute;
     padding: var(--pad-small);
     box-shadow: 0px 0px var(--s-shadow) var(--c-shadow);
     font-family: var(--font);
     user-select: none;
+    z-index: 30;
+    border-radius: var(--corner-big);
 }
 
 app-dragger {
@@ -411,4 +415,18 @@ app-dragger {
 
 .app-dragger.top-down:hover {
     cursor: ns-resize;
+}
+
+
+
+.corner-resize {
+    position: absolute;
+    z-index: 15;
+    border: calc( var(--pad) / 2 ) solid rgba(0,0,0,0);
+    border-left: calc( var(--pad) / 2 ) solid var(--c-mid);
+    top: calc(100% - (var(--pad) / 1.5));
+    left: calc(100% - (var(--pad) / 1.5));
+    width: 0;
+    height: 0;
+    transform: rotate(45deg);
 }

@@ -1,25 +1,26 @@
-const { BrowserWindow, app, Menu } = require('electron');
-const ipc = require('electron').ipcMain;
-const path = require('path');
+const { BrowserWindow, app, Menu } = require("electron");
+const ipc = require("electron").ipcMain;
+const path = require("path");
 
 let w;
 
-app.on('ready', () => {
-    w = new BrowserWindow({ frame: true, minHeight: 400, webPreferences: { nodeIntegration: false } });
+app.on("ready", () => {
+	w = new BrowserWindow({
+		frame: false, minHeight: 400, webPreferences: { preload: path.join(__dirname, "scripts/backend/preload.js"), nodeIntegration: false, enableRemoteModule: false, contextIsolation: true } });
 
-    w.loadFile('main.html');
+    w.loadFile("main.html");
 
-    w.on('closed', () => {
+    w.on("closed", () => {
         app.quit();
 	});
 
 	Menu.setApplicationMenu(Menu.buildFromTemplate(temp));
 });
 
-ipc.on('app', (event, arg) => {
+ipc.on("app", (event, arg) => {
 	arg = JSON.parse(arg);
 	switch (arg.action) {
-		case 'fs':
+		case "fs":
 			let win = BrowserWindow.fromId(Number(arg.val));
 			if (win.isMaximized()) {
 				win.unmaximize();
@@ -27,56 +28,62 @@ ipc.on('app', (event, arg) => {
 				win.maximize();
 			}
 			break;
-		case 'mz':
+		case "mz":
 			BrowserWindow.fromId(Number(arg.val)).minimize();
 			break;
-		case 'w_reload':
+		case "w-reload":
 			w.reload();
 			break;
-		case 'toggle_dev':
+		case "toggle-dev":
 			w.toggleDevTools();
+			break;
+		case "return":
+			w.webContents.send("app", `{ "action": "return", "text": "This is some text." }`);
+			break;
+		case "get-window-id":
+			w.webContents.send("app", `{ "action": "window-id", "id": "${w.id}" }`);
 			break;
 	}
 });
 
 const temp = [
 	{
-		label: 'File',
+		label: "File",
 		submenu: [
 			{
-				label: 'New File',
-				accelerator: 'Ctrl+N',
+				label: "New File",
+				accelerator: "Ctrl+N",
 				click() {
 					let o = {
-						action: 'new-file'
+						action: "new-file"
 					}
-					w.webContents.send('app', JSON.stringify(o));
+					w.webContents.send("app", JSON.stringify(o));
 				}
 			},
 			{
-				label: 'Save File',
-				accelerator: 'Ctrl+S',
+				label: "Save File",
+				accelerator: "Ctrl+S",
 				click() {
 					let o = {
-						action: 'save-file'
+						action: "save-file"
 					}
-					w.webContents.send('app', JSON.stringify(o));
+					w.webContents.send("app", JSON.stringify(o));
 				}
 			},
 			{
-				label: 'Open File',
-				accelerator: 'Ctrl+O',
+				label: "Open File",
+				accelerator: "Ctrl+O",
 				click() {
 					let o = {
-						action: 'open-file'
+						action: "open-file"
 					}
-					w.webContents.send('app', JSON.stringify(o));
+					w.webContents.send("app", JSON.stringify(o));
 				}
 			},
-			{ type: 'separator' },
+			{ type: "separator" },
 			{
-				label: 'Close',
-				accelerator: 'Alt+F4',
+				label: "Close",
+				accelerator: "Alt+F4",
 				click() {
 					app.quit();
 				}
@@ -84,52 +91,52 @@ const temp = [
 		]
 	},
 	{
-		label: 'Tools',
+		label: "Tools",
 		submenu: [
 			{
-				label: 'Add object',
+				label: "Add object",
 				click() {
 					let o = {
-						action: 'new-object'
+						action: "new-object"
 					}
-					w.webContents.send('app', JSON.stringify(o));
+					w.webContents.send("app", JSON.stringify(o));
 				}
 			},
 			{
-				label: 'Add image',
+				label: "Add image",
 				click() {
 					let o = {
-						action: 'new-image'
+						action: "new-image"
 					}
-					w.webContents.send('app', JSON.stringify(o));
+					w.webContents.send("app", JSON.stringify(o));
 				}
 			},
-			{ type: 'separator' },
+			{ type: "separator" },
 			{
-				label: 'Toggle grid',
-				accelerator: 'Ctrl+G',
+				label: "Toggle grid",
+				accelerator: "Ctrl+G",
 				click() {
 					let o = {
-						action: 'toggle-grid'
+						action: "toggle-grid"
 					}
-					w.webContents.send('app', JSON.stringify(o));
+					w.webContents.send("app", JSON.stringify(o));
 				}
 			}
 		]
 	},
 	{
-		label: 'Help',
+		label: "Help",
 		submenu: [
 			{
-				label: 'Reload',
-				accelerator: 'Ctrl+R',
+				label: "Reload",
+				accelerator: "Ctrl+R",
 				click() {
 					w.reload();
 				}
 			},
 			{
-				label: 'Open Console',
-				accelerator: 'Ctrl+Shift+I',
+				label: "Open Console",
+				accelerator: "Ctrl+Shift+I",
 				click() {
 					w.toggleDevTools();
 				}

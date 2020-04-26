@@ -1,14 +1,14 @@
 /// animations
 
-function draw_grid() {
+function drawGrid() {
     if (grid) {
         ctx.fillStyle = getCSS('--c-lightest');
         ctx.globalAlpha = 0.2;
-        for (let i = 1; i < sett.grid_size; i++) {
-            ctx.fillRect(i * canvas.width / sett.grid_size - 1, 0, 2, canvas.height);
+        for (let i = 1; i < sett.gridSize; i++) {
+            ctx.fillRect(i * canvas.width / sett.gridSize - 1, 0, 2, canvas.height);
         }
-        for (let i = 1; i < sett.grid_size / sett.ratio; i++) {
-            ctx.fillRect(0, i * canvas.height / sett.grid_size * sett.ratio - 1, canvas.width, 2);
+        for (let i = 1; i < sett.gridSize / sett.ratio; i++) {
+            ctx.fillRect(0, i * canvas.height / sett.gridSize * sett.ratio - 1, canvas.width, 2);
         }
 
         ctx.fillStyle = getCSS('--c-lightest');
@@ -31,36 +31,36 @@ function draw_grid() {
 function play() {
     if (playing) {
         playing = false;
-        $('#b_play').html('&#9654;');
+        document.getElementById('b_play').innerHTML = '&#9654;';
     } else {
         playing = true;
-        $('#b_play').html('&#10074;&#10074;');
+        document.getElementById('b_play').innerHTML = '&#10074;&#10074;';
     }
 }
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    tl_ctx.clearRect(0, 0, tl_can.width, tl_can.height);
+    tlCtx.clearRect(0, 0, tlCanvas.width, tlCanvas.height);
 
-    draw_grid();
+    drawGrid();
 
-    draw_timeline();
+    drawTimeline();
 
     requestAnimationFrame(draw);
 }
 
 draw();
 
-change_time('s_frame');
-resize_grid('s_grid');
+changeTime(document.querySelector("input[data-link='stime']"));
+resizeGrid(document.querySelector("input[data-link='sgrid']"));
 
-$(`[data-link=${$('[data-link=s_frame]').attr('data-link')}]`).text($('[data-link=s_frame]').val());
-$(`[data-link=${$('[data-link=s_grid]').attr('data-link')}]`).text($('[data-link=s_grid]').val());
+document.querySelector(`text[data-link="stime"]`).innerText = document.querySelector("input[data-link='stime']").value;
+document.querySelector(`text[data-link="sgrid"]`).innerText = document.querySelector("input[data-link='sgrid']").value;
 
-$('#del_layer').hide();
+document.getElementById("del_layer").style.display = "none";
 
 deselect();
 
 document.getElementById('timeline').height = window.innerHeight;
 
-sett.layer_limit = (window.innerHeight - sett.tl_fnt_sz * 3) / sett.tl_fnt_sz;
+sett.layerLimit = (window.innerHeight - sett.tlFontSize * 3) / sett.tlFontSize;

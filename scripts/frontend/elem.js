@@ -6,50 +6,62 @@ class AppHead extends HTMLElement {
     }
 
     connectedCallback() {
-        let tb_img = document.createElement('img');
-        $(tb_img).attr('src', path.join(__dirname + this.getAttribute('img-src'))).addClass('app-home-logo').attr('width', `${getCSS('--s-titlebar')}px`);
-        this.appendChild(tb_img);
-        console.log($(tb_img).attr('src'));
+        let tbIMG = document.createElement("img");
+        tbIMG.setAttribute("src", this.getAttribute("img-src"));
+        tbIMG.classList.add("app-home-logo");
+        tbIMG.setAttribute("width", `${getCSS("--s-titlebar")}px`);
+        this.appendChild(tbIMG);
+        console.log(tbIMG.getAttribute("src"));
 
         /*
-        let titlebar_text = document.createElement('text');
+        let titlebar_text = document.createElement("text");
         titlebar_text.innerHTML = document.title;
-        titlebar_text.setAttribute('class', 'app-home-title');
+        titlebar_text.setAttribute("class", "app-home-title");
         this.appendChild(titlebar_text);
         */
 
         for (let i in menu) {
-            let b_n = document.createElement('button');
-            $(b_n).attr('class', 'app-home-button menu').text(menu[i].name);
-            this.appendChild(b_n);
-            $(b_n).attr('onclick', `open_contextmenu('${menu[i].menu}',${i * getCSS('--pad') * 2 + getCSS('--pad')},${getCSS('--s-titlebar')},0,true,true)`)
+            let bNew = document.createElement("button");
+            bNew.setAttribute("class", "app-home-button menu");
+            bNew.innerText = menu[i].name;
+            this.appendChild(bNew);
+            bNew.setAttribute("onclick", `open_contextmenu('${menu[i].menu}',Number(${i} * getCSS("--pad") * 2 + getCSS("--pad")),getCSS("--s-titlebar"),0,true,true)`);
         }
 
-        let buff = document.createElement('div');
-        $(buff).addClass('app-home-buffer');
+        let buff = document.createElement("div");
+        buff.classList.add("app-home-buffer");
         this.appendChild(buff);
 
-        if (!this.hasAttribute('no-mz')) {
-            let b_mz = document.createElement('button');
-            $(b_mz).attr('class', 'app-home-button mz').attr('onclick', `ipc.send("app",'{ "action": "mz", "val": "${remote.getCurrentWindow().id}" }')`).attr('data-tool', 'Minimize (Ctrl + M)').html('\u2500');
-            if (this.hasAttribute('disable-mz')) {
-                $(b_mz).addClass('app-home-disabled').attr('disabled', 'true');
+        if (!this.hasAttribute("no-mz")) {
+            let bMZ = document.createElement("button");
+            bMZ.setAttribute("class", "app-home-button mz");
+            bMZ.setAttribute("data-tool", "Minimize (Ctrl + M)");
+            bMZ.innerHTML = "\u2500";
+            if (this.hasAttribute("disable-mz")) {
+                bMZ.classList.add("app-home-disabled");
+                bMZ.setAttribute("disabled", "true");
             }
-            this.appendChild(b_mz);
+            this.appendChild(bMZ);
         }
 
-        if (!this.hasAttribute('no-fs')) {
-            let b_fs = document.createElement('button');
-            $(b_fs).attr('class', 'app-home-button fs').attr('onclick', `ipc.send("app",'{ "action": "fs", "val": "${remote.getCurrentWindow().id}" }')`).attr('data-tool', 'Fullscreen (F11)').html('\u2610');
-            if (this.hasAttribute('disable-fs')) {
-                $(b_fs).addClass('app-home-disabled').attr('disabled', 'true');
+        if (!this.hasAttribute("no-fs")) {
+            let bFS = document.createElement("button");
+            bFS.setAttribute("class", "app-home-button fs");
+            bFS.setAttribute("data-tool", "Fullscreen (F11)");
+            bFS.innerHTML = "\u2610";
+            if (this.hasAttribute("disable-fs")) {
+                bFS.classList.add("app-home-disabled")
+                bFS.setAttribute("disabled", "true");
             }
-            this.appendChild(b_fs);
+            this.appendChild(bFS);
         }
 
-        let b_cl = document.createElement('button');
-        $(b_cl).attr('class', 'app-home-button close').attr('onclick', 'window.close()').attr('data-tool', 'Close App (Alt + F4)').html('\u2715');
-        this.appendChild(b_cl);
+        let bCL = document.createElement("button");
+        bCL.setAttribute("class", "app-home-button close");
+        bCL.setAttribute("onclick", "window.close()");
+        bCL.setAttribute("data-tool", "Close App (Alt + F4)");
+        bCL.innerHTML = "\u2715";
+        this.appendChild(bCL);
     }
 }
 
@@ -60,20 +72,20 @@ class AppDragger extends HTMLElement {
 
     connectedCallback() {
         let dir;
-        switch (this.getAttribute('direction')) {
-            case 'top-down': case 'down-top': dir = 'top-down'; break;
-            case 'left-right': case 'right-left': dir = 'left-right'; break;
+        switch (this.getAttribute("direction")) {
+            case "top-down": case "down-top": dir = "top-down"; break;
+            case "left-right": case "right-left": dir = "left-right"; break;
         }
-        this.setAttribute('class', `app-dragger ${dir}`);
+        this.setAttribute("class", `app-dragger ${dir}`);
         let r = btoa(Math.round(Math.random() * 256));
         while (document.getElementsByName(r).length) {
             r = btoa(Math.round(Math.random() * 256));
         }
-        this.setAttribute('name', r);
-        this.setAttribute('data-menu', `Toggle panel=>toggle_panel("` + r + `")`);
-        this.addEventListener('mousedown', drag_on);
+        this.setAttribute("name", r);
+        this.setAttribute("data-menu", `Toggle panel=>toggle_panel("` + r + `")`);
+        this.addEventListener("mousedown", dragOn);
     }
 }
 
-customElements.define('app-head', AppHead);
-customElements.define('app-dragger', AppDragger);
+customElements.define("app-head", AppHead);
+customElements.define("app-dragger", AppDragger);
