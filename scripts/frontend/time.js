@@ -37,9 +37,12 @@ function drawMouse() {
             tlCtx.fillRect(x - calcTimelineSize() / 2, y + sett.tlFontSize, calcTimelineSize(), sett.tlFontSize);
         }
     } else {
+        if (snap) {
+            x -= calcTimelineSize() / 2;
+        }
         tlCtx.globalAlpha = .8;
         tlCtx.fillStyle = getCSS("--c-yes");
-        tlCtx.fillRect(x - calcTimelineSize() / 2, tct, 2, sett.tlFontSize);
+        tlCtx.fillRect(Math.round(x), tct, 2, sett.tlFontSize);
     }
 
     tlCtx.globalAlpha = 1;
@@ -94,6 +97,9 @@ function drawTime() {
 
     tlCtx.fillStyle = colorLuminance(getCSS("--c-dark"), -.8);
     tlCtx.fillRect(tl, tct, sett.layerSize, sett.tlFontSize);
+    tlCtx.font = `${sett.tlFontSize / 1.6}px Segoe UI`;
+    tlCtx.fillStyle = getCSS("--c-mid");
+    tlCtx.fillText(`F: ${frame}, fps: ${sett.fps}`, tl + sett.tlFontSize / 4, tct + sett.tlFontSize / 1.3);
 }
 
 function addLayer(l = false) {
@@ -110,7 +116,16 @@ function addLayer(l = false) {
 
 function tlClick() {
     if (my < tct + sett.tlFontSize) {
-        frame = mx * sett.tlSnap / (calcTimelineSize() / sett.tlSnap / sett.fps + sett.layerSize);
+        frame = Math.round((mx - sett.layerSize) / (calcTimelineSize() * sett.tlSnap / sett.fps) - (sett.layerSize / (calcTimelineSize() * sett.tlSnap / sett.fps + sett.layerSize))) + 1;
+        if (snap) {
+            frame = Math.round(Math.round((frame - (calcTimelineSize() / sett.tlSnap / 2)) / (sett.fps / sett.tlSnap)) * (sett.fps / sett.tlSnap));
+        }
+        if (frame < 0) {
+            frame = 0;
+        }
+        if (frame >= sett.fps * sett.videoLength) {
+            frame = sett.fps * sett.videoLength;
+        }
     }
     for (let i in layers) {
         if (timelineHover("layer",i)) {
