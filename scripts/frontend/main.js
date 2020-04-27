@@ -10,16 +10,19 @@ const tlCanvas = document.getElementById("timeline");
 const tlCtx = tlCanvas.getContext("2d");
 
 let grid = false;
-let snap = false;
+let tlSnapOn = false;
 let playing = false;
 let frame = 0;
 let mouseX, mouseY;
-let selected;
+let tlSelected;
 let draggerClick;
 let windowID;
+let randomSeed = 0;
+let adding = null;
 let layers = [
     { name: "Master", contents: [] }
 ];
+let obj = [];
 
 function inpSlider(e) {
     document.querySelector(`text[data-link="${e.getAttribute("data-link")}"]`).innerHTML = e.value;
@@ -59,11 +62,9 @@ const sett = {
     layerSize: 96,
     layerLimit: 10,
     tlSnap: 8,
-    fps: 60
-}
-
-function add(o) {
-    
+    fps: 60,
+    defaultLineWidth: 64,
+    defaultLineLength: 160
 }
 
 function toggleGrid() {
@@ -77,7 +78,7 @@ function toggleGrid() {
 }
 
 function toggleSnap() {
-    snap ? snap = false : snap = true;
+    tlSnapOn ? tlSnapOn = false : tlSnapOn = true;
     g = document.getElementById("t_snap");
     if (g.classList.contains("toggled")) {
         g.classList.remove("toggled");
@@ -91,7 +92,10 @@ function resizeGrid(e) {
 }
 
 function setWindowSize(s) {
-    html.style.setProperty('--scale', s);
+    html.style.setProperty("--scale", s);
+    sett.tlSize = 40 * getCSS("--scale");
+    sett.tlFontSize = 16 * getCSS("--scale");
+    sett.layerSize = 96 * getCSS("--scale");
 }
 
 window.addEventListener("message", event => {

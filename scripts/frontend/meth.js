@@ -4,6 +4,11 @@ function arr(list) {
     return Array.prototype.slice.call(list);
 }
 
+function getRandom() {
+    randomSeed++;
+    return randomSeed;
+}
+
 function ipcSend(msg) {
     window.postMessage({
         protocol: "to-app",

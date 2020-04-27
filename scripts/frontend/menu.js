@@ -162,6 +162,7 @@ function closeMenu(click = false) {
 }
 
 let tipTimeout;
+let tipTimeoutTime = 1000;
 let currentTip = null;
 
 document.querySelector("[data-tip]").addEventListener("mouseenter", (e) => {
@@ -207,7 +208,7 @@ document.addEventListener("mousemove", (event) => {
 
             document.body.appendChild(tip);
         }
-    }, tipTimeout);
+    }, tipTimeoutTime);
 });
 
 document.addEventListener("mouseup", (e) => {

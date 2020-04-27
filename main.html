@@ -22,7 +22,7 @@
 
         <div id="div_tools" class="panel tools">
 
-            <button onclick="open_contextmenu('Line=>;Shape=>;Particle=>')" data-menu="Line=>;Shape=>;Particle=>" data-tip="Add object">Add object</button>
+            <button onclick="open_contextmenu(`Line=>add('line');Shape=>add('shape');Particle=>add('particle')`)" data-menu="" data-tip="Add object">Add object</button>
 
             <button onclick="add('image')">Add image</button>
 
@@ -36,7 +36,7 @@
 
         <div id="div_preview" class="panel preview">
 
-            <canvas id="preview" class="animation_preview" width=1920 height=1080></canvas>
+            <canvas id="preview" onclick="pClick()" class="animation_preview" width=1920 height=1080></canvas>
 
         </div>
 

@@ -15,15 +15,26 @@ function handlePlayer() {
             play(false);
         }
     }
+    let pos = frame * calcTimelineSize() * sett.tlSnap / sett.fps + sett.layerSize;
+    if (playing) {
+        let grd = ctx.createLinearGradient(pos - sett.tlFontSize, 0, pos, 0);
+        grd.addColorStop(0, "rgba(0,0,0,0)");
+        grd.addColorStop(1, getCSS("--c-yes"));
+
+        tlCtx.globalAlpha = .5;
+        tlCtx.fillStyle = grd;
+        tlCtx.fillRect(pos - sett.tlFontSize, sett.tlFontSize, sett.tlFontSize, calcTimelineSize("h") - sett.tlFontSize);
+    }
+    tlCtx.globalAlpha = 1;
     tlCtx.fillStyle = getCSS("--c-yes");
-    tlCtx.fillRect(frame * calcTimelineSize() * sett.tlSnap / sett.fps + sett.layerSize, sett.tlFontSize, 2, calcTimelineSize("h") - sett.tlFontSize);
+    tlCtx.fillRect(pos, sett.tlFontSize, 2, calcTimelineSize("h") - sett.tlFontSize);
 }
 
 function drawMouse() {
     let x = mx, y = my - sett.tlFontSize * 1.5 + tct;
     tlCtx.fillStyle = getCSS("--c-lightest");
     tlCtx.globalAlpha = 0.1;
-    if (snap) {
+    if (tlSnapOn) {
         x = Math.round((x - sett.layerSize + calcTimelineSize() / 2) / calcTimelineSize()) * calcTimelineSize() + sett.layerSize - calcTimelineSize() / 2;
     }
     y = Math.round(y / sett.tlFontSize) * sett.tlFontSize;
@@ -37,7 +48,7 @@ function drawMouse() {
             tlCtx.fillRect(x - calcTimelineSize() / 2, y + sett.tlFontSize, calcTimelineSize(), sett.tlFontSize);
         }
     } else {
-        if (snap) {
+        if (tlSnapOn) {
             x -= calcTimelineSize() / 2;
         }
         tlCtx.globalAlpha = .8;
@@ -49,11 +60,10 @@ function drawMouse() {
 }
 
 function drawTime() {
-    let div = Math.round(sett.tlSize / 24);
+    let div = 1;
+    div = Math.round(sett.tlSnap * (64 / sett.tlSnap) / calcTimelineSize());
+    div = Math.pow(2, Math.ceil(Math.log(div) / Math.log(2)));
     if (div < 1) { div = 1; }
-    if (div & 2 > 0 && div != 1) {
-        div += 1;
-    }
 
     for (let i in layers) {
         if (i % 2 == 0) {
@@ -88,7 +98,7 @@ function drawTime() {
     tlCtx.fillRect(tl, 0, sett.layerSize, tlCanvas.height);
 
     for (let i in layers) {
-        (selected == i) ? tlCtx.fillStyle = colorLuminance(getCSS("--c-yes"), -.4) : tlCtx.fillStyle = colorLuminance(getCSS("--c-dark"), (i % 2 == 0) ? .2 : 0);
+        (tlSelected == i) ? tlCtx.fillStyle = colorLuminance(getCSS("--c-yes"), -.4) : tlCtx.fillStyle = colorLuminance(getCSS("--c-dark"), (i % 2 == 0) ? .2 : 0);
         if (timelineHover("layer",i)) tlCtx.fillStyle = colorLuminance(tlCtx.fillStyle, +.5);
         tlCtx.fillRect(tl, i * sett.tlFontSize + sett.tlFontSize, sett.layerSize, sett.tlFontSize);
         tlCtx.fillStyle = getCSS("--c-lightest");
@@ -104,7 +114,7 @@ function drawTime() {
 
 function addLayer(l = false) {
     if (l) {
-        layers.splice(selected, 1);
+        layers.splice(tlSelected, 1);
         document.getElementById("del_layer").style.display = "none";
         deselect();
     } else {
@@ -117,7 +127,7 @@ function addLayer(l = false) {
 function tlClick() {
     if (my < tct + sett.tlFontSize) {
         frame = Math.round((mx - sett.layerSize) / (calcTimelineSize() * sett.tlSnap / sett.fps) - (sett.layerSize / (calcTimelineSize() * sett.tlSnap / sett.fps + sett.layerSize))) + 1;
-        if (snap) {
+        if (tlSnapOn) {
             frame = Math.round(Math.round((frame - (calcTimelineSize() / sett.tlSnap / 2)) / (sett.fps / sett.tlSnap)) * (sett.fps / sett.tlSnap));
         }
         if (frame < 0) {
@@ -129,11 +139,11 @@ function tlClick() {
     }
     for (let i in layers) {
         if (timelineHover("layer",i)) {
-            selected = i;
+            tlSelected = i;
             document.getElementById("del_layer").style.display = "initial";
             document.getElementById("timeline").setAttribute("data-menu", "Rename=>;Remove layer=>addLayer(1)");
         } else {
-            if (selected == i) {
+            if (tlSelected == i) {
                 deselect();
                 document.getElementById("del_layer").style.display = "none";
             }
@@ -158,13 +168,14 @@ function calcTimelineSize(t = null) {
 }
 
 function deselect() {
-    selected = undefined;
+    tlSelected = undefined;
     document.getElementById("timeline").setAttribute("data-menu", "");
 }
 
 function changeTime(o) {
     sett.tlSize = o.value;
     tlCanvas.width = window.screen.width / 10 * 100 / sett.tlSize * sett.videoLength + sett.layerSize;
+    tl = tl * o.value;
 }
 
 function drawTimeline() {
