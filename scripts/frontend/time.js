@@ -30,7 +30,7 @@ function handlePlayer() {
     tlCtx.fillRect(pos, sett.tlFontSize, 2, calcTimelineSize("h") - sett.tlFontSize);
 }
 
-function drawMouse() {
+function drawTLMouse() {
     let x = mx, y = my - sett.tlFontSize * 1.5 + tct;
     tlCtx.fillStyle = getCSS("--c-lightest");
     tlCtx.globalAlpha = 0.1;
@@ -191,6 +191,6 @@ function drawTimeline() {
     drawTime();
     handlePlayer();
     if (isHover(document.getElementById("timeline"))) {
-        drawMouse();
+        drawTLMouse();
     }
 }

@@ -6,14 +6,21 @@ function add(o) {
     adding = o;
 }
 
-function newObject (o){
+function newObject(o) {
+    let x = amx;
+    let y = amy;
+    if (pSnapOn) {
+        x = Math.round(amx / calcGridSize()) * calcGridSize();
+        y = Math.round(amy / calcGridSize("h")) * calcGridSize("h");
+    }
+
     switch (o) {
         case "line":
             obj[obj.length] = {
                 id: getRandom(),
                 type: "line",
-                x: amx,
-                y: amy,
+                x: x,
+                y: y,
                 length: sett.defaultLineLength,
                 width: sett.defaultLineWidth,
                 rot: 0,
@@ -26,11 +33,17 @@ function newObject (o){
 
 function drawMouse() {
     if (adding !== null) {
+        let x = amx;
+        let y = amy;
+        if (pSnapOn) {
+            x = Math.round(amx / calcGridSize()) * calcGridSize();
+            y = Math.round(amy / calcGridSize("h")) * calcGridSize("h");
+        }
         switch (adding) {
             case "line":
                 ctx.fillStyle = getCSS("--c-lightest");
                 ctx.globalAlpha = .5;
-                ctx.fillRect(amx - sett.defaultLineWidth / 2, amy - sett.defaultLineWidth / 2, sett.defaultLineLength, sett.defaultLineWidth);
+                ctx.fillRect(x - sett.defaultLineWidth / 2, y - sett.defaultLineWidth / 2, sett.defaultLineLength + sett.defaultLineWidth, sett.defaultLineWidth);
                 ctx.globalAlpha = 1;
                 break;
         }
@@ -38,10 +51,20 @@ function drawMouse() {
 }
 
 function pClick() {
-    console.log("click");
     if (adding !== null) {
         newObject(adding);
         adding = null;
+    } else {
+        let h = true;
+        for (let i in obj) {
+            if (pHover("obj", { x: obj[i].x, y: obj[i].y, w: obj[i].width, l: obj[i].length })) {
+                pSelected = obj[i].id;
+                h = false;
+            }
+        }
+        if (h) {
+            pSelected = null;
+        }
     }
 }
 
@@ -49,8 +72,15 @@ function drawObjects() {
     for (let i in obj) {
         if (obj[i].type === "line") {
             ctx.fillStyle = obj[i].color;
-            ctx.globalAlpha = obj[i].alpha;
-            ctx.fillRect(obj[i].x - obj[i].width / 2, obj[i].y - obj[i].width / 2, obj[i].length, obj[i].width);
+            if (pSelected === obj[i].id) {
+                ctx.fillStyle = getCSS("--c-yes");
+            }
+            if (pHover("obj", { x: obj[i].x, y: obj[i].y, w: obj[i].width, l: obj[i].length })) {
+                ctx.globalAlpha = obj[i].alpha / 1.2;
+            } else {
+                ctx.globalAlpha = obj[i].alpha;
+            }
+            ctx.fillRect(obj[i].x - obj[i].width / 2, obj[i].y - obj[i].width / 2, obj[i].length + obj[i].width, obj[i].width);
             ctx.globalAlpha = 1;
         }
     }
@@ -61,10 +91,10 @@ function drawGrid() {
         ctx.fillStyle = getCSS("--c-lightest");
         ctx.globalAlpha = 0.2;
         for (let i = 1; i < sett.gridSize; i++) {
-            ctx.fillRect(i * canvas.width / sett.gridSize - 1, 0, 2, canvas.height);
+            ctx.fillRect(i * calcGridSize() - 1, 0, 2, canvas.height);
         }
         for (let i = 1; i < sett.gridSize / sett.ratio; i++) {
-            ctx.fillRect(0, i * canvas.height / sett.gridSize * sett.ratio - 1, canvas.width, 2);
+            ctx.fillRect(0, i * calcGridSize("h") - 1, canvas.width, 2);
         }
 
         ctx.fillStyle = getCSS("--c-lightest");
@@ -84,6 +114,14 @@ function drawGrid() {
     }
 }
 
+function pHover(type, i) {
+    if (type === "obj") {
+        return (amx > i.x - i.w/2 && amx < i.x + i.l + i.w/2 && amy > i.y - i.w/2 && amy < i.y + i.w/2);
+    } else {
+        return false;
+    }
+}
+
 function play(p = null) {
     if ((p === null) ? playing : p === false) {
         playing = false;
@@ -94,6 +132,14 @@ function play(p = null) {
         if (frame === sett.videoLength * sett.fps) {
             frame = 0;
         }
+    }
+}
+
+function calcGridSize(w = "w") {
+    if (w === "h") {
+        return canvas.height / sett.gridSize * sett.ratio;
+    } else {
+        return canvas.width / sett.gridSize;
     }
 }
 

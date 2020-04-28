@@ -141,7 +141,7 @@ function open_contextmenu(menu, x = null, y = null, level = 0, cutTop = false, i
     add.forEach((item, index) => {
         let i = getCSS("--s-menu");
 
-        item.b.setAttribute("onmouseup", `open_contextmenu("${item.a}",${mex + mw},${mey + item.i * i},${level + 1},false,${isMenu})`);
+        item.b.setAttribute("onmouseup", `open_contextmenu('${item.a}',${mex + mw},${mey + item.i * i},${level + 1},false,${isMenu})`);
     });
 }
 

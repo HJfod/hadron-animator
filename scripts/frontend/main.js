@@ -11,10 +11,12 @@ const tlCtx = tlCanvas.getContext("2d");
 
 let grid = false;
 let tlSnapOn = false;
+let pSnapOn = false;
 let playing = false;
 let frame = 0;
 let mouseX, mouseY;
 let tlSelected;
+let pSelected;
 let draggerClick;
 let windowID;
 let randomSeed = 0;
@@ -40,7 +42,7 @@ const menu = [
     },
     {
         name: "Tools",
-        menu: "Add object=>{Add line=>;Add shape=>;Add particles=>};Add image=>;Add text=>;sep;Toggle grid[noclose#Ctrl+G]=>toggleGrid()"
+        menu: `Add object=>{Add line=>add("line");Add shape=>add("shape");Add particles=>add("particle")};Add image=>;Add text=>;sep;Toggle grid[noclose#Ctrl+G]=>toggleGrid()`
     },
     {
         name: "Window",
@@ -63,8 +65,8 @@ const sett = {
     layerLimit: 10,
     tlSnap: 8,
     fps: 60,
-    defaultLineWidth: 64,
-    defaultLineLength: 160
+    defaultLineWidth: 32,
+    defaultLineLength: 240
 }
 
 function toggleGrid() {
@@ -80,6 +82,16 @@ function toggleGrid() {
 function toggleSnap() {
     tlSnapOn ? tlSnapOn = false : tlSnapOn = true;
     g = document.getElementById("t_snap");
+    if (g.classList.contains("toggled")) {
+        g.classList.remove("toggled");
+    } else {
+        g.classList.add("toggled");
+    }
+}
+
+function togglePreviewSnap() {
+    pSnapOn ? pSnapOn = false : pSnapOn = true;
+    g = document.getElementById("t_psnap");
     if (g.classList.contains("toggled")) {
         g.classList.remove("toggled");
     } else {
