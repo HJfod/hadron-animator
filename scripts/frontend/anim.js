@@ -33,6 +33,11 @@ function newObject(o) {
 
 function drawMouse() {
     if (adding !== null) {
+        ctx.fillStyle = getCSS("--c-lightest");
+        ctx.globalAlpha = .7;
+        ctx.font = `${sett.pFontSize}px ${sett.font}`;
+        ctx.fillText("Right-click to cancel", sett.pFontSize / 4, sett.pFontSize);
+
         let x = amx;
         let y = amy;
         if (pSnapOn) {
@@ -61,6 +66,10 @@ function pClick() {
                 pSelected = obj[i].id;
                 h = false;
             }
+            if (pHover("objSett", { x: obj[i].x - obj[i].width / 2, y: obj[i].y - obj[i].width / 2 - sett.pFontSize })) {
+                obj.splice(i, 1);
+                pSelected = null;
+            }
         }
         if (h) {
             pSelected = null;
@@ -68,11 +77,32 @@ function pClick() {
     }
 }
 
+function pDeselect() {
+    adding = null;
+    pSelected = null;
+}
+
 function drawObjects() {
     for (let i in obj) {
         if (obj[i].type === "line") {
             ctx.fillStyle = obj[i].color;
             if (pSelected === obj[i].id) {
+                ctx.fillStyle = getCSS("--c-lightest");
+                if (pHover("objSett", { x: obj[i].x - obj[i].width / 2, y: obj[i].y - obj[i].width / 2 - sett.pFontSize })) {
+                    ctx.globalAlpha = .7;
+                }
+                let o = 4;
+                ctx.fillRect(obj[i].x - obj[i].width / 2, obj[i].y - obj[i].width / 2 - sett.pFontSize - sett.pFontSize / o, sett.pFontSize, sett.pFontSize);
+
+                ctx.fillStyle = getCSS("--c-darkest");
+                ctx.lineWidth = sett.pFontSize / 2 / o;
+
+                ctx.moveTo(obj[i].x - obj[i].width / 2 + sett.pFontSize / o, obj[i].y - obj[i].width / 2 - sett.pFontSize);
+                ctx.lineTo(obj[i].x - obj[i].width / 2 + sett.pFontSize - sett.pFontSize / o, obj[i].y - obj[i].width / 2 - sett.pFontSize / o * 2);
+                ctx.moveTo(obj[i].x - obj[i].width / 2 + sett.pFontSize / o, obj[i].y - obj[i].width / 2 - sett.pFontSize / o * 2);
+                ctx.lineTo(obj[i].x - obj[i].width / 2 + sett.pFontSize - sett.pFontSize / o, obj[i].y - obj[i].width / 2 - sett.pFontSize);
+                ctx.stroke();
+
                 ctx.fillStyle = getCSS("--c-yes");
             }
             if (pHover("obj", { x: obj[i].x, y: obj[i].y, w: obj[i].width, l: obj[i].length })) {
@@ -116,7 +146,9 @@ function drawGrid() {
 
 function pHover(type, i) {
     if (type === "obj") {
-        return (amx > i.x - i.w/2 && amx < i.x + i.l + i.w/2 && amy > i.y - i.w/2 && amy < i.y + i.w/2);
+        return (amx > i.x - i.w / 2 && amx < i.x + i.l + i.w / 2 && amy > i.y - i.w / 2 && amy < i.y + i.w / 2);
+    } else if (type === "objSett") {
+        return (amx > i.x && amx < i.x + sett.pFontSize && amy > i.y && amy < i.y + sett.pFontSize);
     } else {
         return false;
     }

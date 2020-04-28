@@ -90,7 +90,7 @@ function drawTime() {
 
     tlCtx.fillStyle = getCSS("--c-lightest");
     for (let i = 0; i < (sett.videoLength + 1) * sett.tlSnap; i += div) {
-        tlCtx.font = `${sett.tlFontSize / 1.2}px Segoe UI`;
+        tlCtx.font = `${sett.tlFontSize / 1.2}px ${sett.font}`;
         tlCtx.fillText(i / sett.tlSnap + "s", i * calcTimelineSize() + sett.layerSize + sett.tlFontSize / 4, tct + sett.tlFontSize / 1.2);
     }
 

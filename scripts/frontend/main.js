@@ -66,7 +66,9 @@ const sett = {
     tlSnap: 8,
     fps: 60,
     defaultLineWidth: 32,
-    defaultLineLength: 240
+    defaultLineLength: 240,
+    font: "Segoe UI",
+    pFontSize: 48
 }
 
 function toggleGrid() {
