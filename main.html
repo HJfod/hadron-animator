@@ -30,15 +30,21 @@
 
             <button onclick="toggleGrid()" id="t_grid" class="toggle">Toggle grid</button>
 
+            <button onclick="togglePreviewSnap()" id="t_psnap" class="toggle">Snap</button>
+
             <input type="range" min="0" max="4" value="1" step="1" class="slider" oninput="inpSlider(this);resizeGrid(this)" data-link="sgrid"><text data-link="sgrid" class="input_val"></text>
 
-            <button onclick="togglePreviewSnap()" id="t_psnap" class="toggle">Snap</button>
+            <text>&#x2003;&#x2003;</text>
+
+            <button onclick="pencil=0"><img src="resources/pencil.svg" class="svgButton"></button>
+
+            <button onclick="pencil=1"><img src="resources/select.svg" class="svgButton"></button>
 
         </div>
 
         <div id="div_preview" class="panel preview">
 
-            <canvas id="preview" onclick="pClick()" class="animation_preview" width=1920 height=1080 oncontextmenu="pDeselect()"></canvas>
+            <canvas id="preview" onmousedown="pDown(event)" onmouseup="pClick(event)" class="animation_preview" width=1920 height=1080 oncontextmenu="pDeselect()"></canvas>
 
         </div>
 

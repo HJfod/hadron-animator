@@ -16,11 +16,12 @@ let playing = false;
 let frame = 0;
 let mouseX, mouseY;
 let tlSelected;
-let pSelected;
+let pSelected = [];
 let draggerClick;
 let windowID;
 let randomSeed = 0;
 let adding = null;
+let pencil = 0;
 let layers = [
     { name: "Master", contents: [] }
 ];

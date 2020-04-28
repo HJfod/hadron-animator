@@ -1,6 +1,7 @@
 /// animations
 
 let amx, amy;
+let tar = { x: null, y: null };
 
 function add(o) {
     adding = o;
@@ -53,55 +54,91 @@ function drawMouse() {
                 break;
         }
     }
+
+    if (tar.x !== null) {
+        ctx.strokeStyle = getCSS("--c-yes");
+        ctx.lineWidth = 5;
+        ctx.strokeRect(tar.x, tar.y, amx - tar.x, amy - tar.y);
+    }
 }
 
-function pClick() {
+function pDown() {
+    if (pencil === 1) {
+        tar.x = amx;
+        tar.y = amy;
+    }
+}
+
+function pClick(e) {
+    if (pencil === 0) {
+         if (adding == null) {
+            let h = true;
+            for (let i in obj) {
+                if (pHover("obj", { x: obj[i].x, y: obj[i].y, w: obj[i].width, l: obj[i].length })) {
+                    if (e.shiftKey) {
+                        pSelected[pSelected.length] = obj[i].id;
+                    } else {
+                        pSelected = [obj[i].id];
+                    }
+                    h = false;
+                }
+                if (pHover("objSett", { x: obj[i].x - obj[i].width / 2, y: obj[i].y - obj[i].width / 2 - sett.pFontSize })) {
+                    obj.splice(i, 1);
+                    h = true;
+                }
+            }
+            if (h) {
+                pSelected = [];
+            }
+        }
+    } else if (pencil === 1) {
+        pSelected = [];
+        for (let i in obj) {
+            if (obj[i].x > Math.abs(tar.x) && obj[i].x < amx && obj[i].y > Math.abs(tar.y) && obj[i].y < amy) {
+                pSelected[pSelected.length] = obj[i].id;
+                console.log("here");
+            }
+        }
+    }
     if (adding !== null) {
         newObject(adding);
         adding = null;
-    } else {
-        let h = true;
-        for (let i in obj) {
-            if (pHover("obj", { x: obj[i].x, y: obj[i].y, w: obj[i].width, l: obj[i].length })) {
-                pSelected = obj[i].id;
-                h = false;
-            }
-            if (pHover("objSett", { x: obj[i].x - obj[i].width / 2, y: obj[i].y - obj[i].width / 2 - sett.pFontSize })) {
-                obj.splice(i, 1);
-                pSelected = null;
-            }
-        }
-        if (h) {
-            pSelected = null;
-        }
     }
+    tar.x = null;
+    tar.y = null;
 }
 
 function pDeselect() {
     adding = null;
-    pSelected = null;
+    pSelected = [];
+}
+
+function drawObjectControls(x, y) {
+    let o = 4;
+    ctx.fillRect(x, y - sett.pFontSize - sett.pFontSize / o, sett.pFontSize, sett.pFontSize);
+
+    ctx.strokeStyle = getCSS("--c-darkest");
+    ctx.lineWidth = sett.pFontSize / 2 / o;
+
+    ctx.moveTo(x + sett.pFontSize / o, y - sett.pFontSize);
+    ctx.lineTo(x + sett.pFontSize - sett.pFontSize / o, y - sett.pFontSize / o * 2);
+    ctx.moveTo(x + sett.pFontSize / o, y - sett.pFontSize / o * 2);
+    ctx.lineTo(x + sett.pFontSize - sett.pFontSize / o, y - sett.pFontSize);
+    ctx.stroke();
 }
 
 function drawObjects() {
     for (let i in obj) {
         if (obj[i].type === "line") {
             ctx.fillStyle = obj[i].color;
-            if (pSelected === obj[i].id) {
-                ctx.fillStyle = getCSS("--c-lightest");
-                if (pHover("objSett", { x: obj[i].x - obj[i].width / 2, y: obj[i].y - obj[i].width / 2 - sett.pFontSize })) {
-                    ctx.globalAlpha = .7;
+            if (pSelected.includes(obj[i].id)) {
+                if (pSelected.length == 1) {
+                    ctx.fillStyle = getCSS("--c-lightest");
+                    if (pHover("objSett", { x: obj[i].x - obj[i].width / 2, y: obj[i].y - obj[i].width / 2 - sett.pFontSize - sett.pFontSize / 4 })) {
+                        ctx.globalAlpha = .7;
+                    }
+                    drawObjectControls(obj[i].x - obj[i].width / 2, obj[i].y - obj[i].width / 2);
                 }
-                let o = 4;
-                ctx.fillRect(obj[i].x - obj[i].width / 2, obj[i].y - obj[i].width / 2 - sett.pFontSize - sett.pFontSize / o, sett.pFontSize, sett.pFontSize);
-
-                ctx.fillStyle = getCSS("--c-darkest");
-                ctx.lineWidth = sett.pFontSize / 2 / o;
-
-                ctx.moveTo(obj[i].x - obj[i].width / 2 + sett.pFontSize / o, obj[i].y - obj[i].width / 2 - sett.pFontSize);
-                ctx.lineTo(obj[i].x - obj[i].width / 2 + sett.pFontSize - sett.pFontSize / o, obj[i].y - obj[i].width / 2 - sett.pFontSize / o * 2);
-                ctx.moveTo(obj[i].x - obj[i].width / 2 + sett.pFontSize / o, obj[i].y - obj[i].width / 2 - sett.pFontSize / o * 2);
-                ctx.lineTo(obj[i].x - obj[i].width / 2 + sett.pFontSize - sett.pFontSize / o, obj[i].y - obj[i].width / 2 - sett.pFontSize);
-                ctx.stroke();
 
                 ctx.fillStyle = getCSS("--c-yes");
             }
@@ -210,3 +247,5 @@ deselect();
 document.getElementById("timeline").height = window.innerHeight;
 
 sett.layerLimit = (window.innerHeight - sett.tlFontSize * 3) / sett.tlFontSize;
+
+document.querySelectorAll(".svgButton").forEach((i) => { i.setAttribute("height", getCSS("--s-button") / 2) });
