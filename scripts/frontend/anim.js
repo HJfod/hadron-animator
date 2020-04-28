@@ -82,9 +82,11 @@ function pClick(e) {
                     }
                     h = false;
                 }
-                if (pHover("objSett", { x: obj[i].x - obj[i].width / 2, y: obj[i].y - obj[i].width / 2 - sett.pFontSize })) {
-                    obj.splice(i, 1);
-                    h = true;
+                if (pSelected.includes(obj[i].id)) {
+                    if (pHover("objSett", { x: obj[i].x - obj[i].width / 2, y: obj[i].y - obj[i].width / 2 - sett.pFontSize, i: 1 })) {
+                        obj.splice(i, 1);
+                        h = true;
+                    }
                 }
             }
             if (h) {
@@ -96,7 +98,6 @@ function pClick(e) {
         for (let i in obj) {
             if (obj[i].x > Math.abs(tar.x) && obj[i].x < amx && obj[i].y > Math.abs(tar.y) && obj[i].y < amy) {
                 pSelected[pSelected.length] = obj[i].id;
-                console.log("here");
             }
         }
     }
@@ -114,17 +115,27 @@ function pDeselect() {
 }
 
 function drawObjectControls(x, y) {
-    let o = 4;
-    ctx.fillRect(x, y - sett.pFontSize - sett.pFontSize / o, sett.pFontSize, sett.pFontSize);
+    let o = sett.pO;
+    let a = ["resources/close.svg","resources/cog.svg","resources/move.svg"];
+    let f = sett.pFontSize;
 
-    ctx.strokeStyle = getCSS("--c-darkest");
-    ctx.lineWidth = sett.pFontSize / 2 / o;
+    y = y - f - f / o;
 
-    ctx.moveTo(x + sett.pFontSize / o, y - sett.pFontSize);
-    ctx.lineTo(x + sett.pFontSize - sett.pFontSize / o, y - sett.pFontSize / o * 2);
-    ctx.moveTo(x + sett.pFontSize / o, y - sett.pFontSize / o * 2);
-    ctx.lineTo(x + sett.pFontSize - sett.pFontSize / o, y - sett.pFontSize);
-    ctx.stroke();
+    for (let i in a) {
+        ctx.globalAlpha = 1;
+        if (pHover("objSett", { x: x, y: y })) {
+            ctx.globalAlpha = .7;
+        }
+        ctx.fillStyle = getCSS("--c-lightest");
+        ctx.fillRect(x + i * (f + f / o), y, f, f);
+
+        ctx.fillStyle = getCSS("--c-darkest");
+        let img = new Image();
+        img.src = a[i];
+        ctx.drawImage(img, x + i * (f + f / o) + f / o, y + f / o, f - f / o * 2, f - f / o * 2);
+    }
+
+    ctx.globalAlpha = 1;
 }
 
 function drawObjects() {
@@ -134,9 +145,6 @@ function drawObjects() {
             if (pSelected.includes(obj[i].id)) {
                 if (pSelected.length == 1) {
                     ctx.fillStyle = getCSS("--c-lightest");
-                    if (pHover("objSett", { x: obj[i].x - obj[i].width / 2, y: obj[i].y - obj[i].width / 2 - sett.pFontSize - sett.pFontSize / 4 })) {
-                        ctx.globalAlpha = .7;
-                    }
                     drawObjectControls(obj[i].x - obj[i].width / 2, obj[i].y - obj[i].width / 2);
                 }
 
@@ -185,7 +193,8 @@ function pHover(type, i) {
     if (type === "obj") {
         return (amx > i.x - i.w / 2 && amx < i.x + i.l + i.w / 2 && amy > i.y - i.w / 2 && amy < i.y + i.w / 2);
     } else if (type === "objSett") {
-        return (amx > i.x && amx < i.x + sett.pFontSize && amy > i.y && amy < i.y + sett.pFontSize);
+        let a = i.i * (sett.pFontSize + sett.pFontSize / sett.pO);
+        return (amx > i.x + a && amx < i.x + a + sett.pFontSize && amy > i.y && amy < i.y + sett.pFontSize); //  + i * (f + f / o)
     } else {
         return false;
     }

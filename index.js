@@ -41,7 +41,7 @@ ipc.on("app", (event, arg) => {
 			w.webContents.send("app", `{ "action": "return", "text": "This is some text." }`);
 			break;
 		case "get-window-id":
-			w.webContents.send("app", `{ "action": "window-id", "id": "${w.id}" }`);
+			w.webContents.send("app", `{ "action": "window-id", "id": "${w.id}", "dir": "${path.join(__dirname).replace(/\\/g,"/")}" }`); 
 			break;
 	}
 });

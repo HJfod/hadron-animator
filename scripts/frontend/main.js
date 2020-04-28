@@ -69,7 +69,9 @@ const sett = {
     defaultLineWidth: 32,
     defaultLineLength: 240,
     font: "Segoe UI",
-    pFontSize: 48
+    pFontSize: 48,
+    dir: "",
+    pO: 8
 }
 
 function toggleGrid() {
@@ -123,7 +125,9 @@ window.addEventListener("message", event => {
                 toggleGrid();
                 break;
             case "window-id":
+                console.log("dir: " + args.dir);
                 windowID = args.id;
+                sett.dir = args.dir;
                 document.querySelector(".app-home-button.mz").setAttribute("onclick", `ipcSend(${JSON.stringify({ action: "mz", val: windowID })})`);
                 document.querySelector(".app-home-button.fs").setAttribute("onclick", `ipcSend(${JSON.stringify({ action: "fs", val: windowID })})`);
                 break;
