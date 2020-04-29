@@ -17,6 +17,7 @@ let frame = 0;
 let mouseX, mouseY;
 let tlSelected;
 let pSelected = [];
+let editing = false;
 let draggerClick;
 let windowID;
 let randomSeed = 0;

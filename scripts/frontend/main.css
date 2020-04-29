@@ -32,6 +32,13 @@
     --trans:            0.1s;
     --corner:           3px;
     --corner-big:       8px;
+
+    --c-p-edit:         #49f;
+    --c-p-select:       #9f4;
+    --c-p-select:       #9f4;
+    --c-p-background:   #000;
+    --c-p-default:      #fff;
+    --c-p-black:        #000;
 }
 
 body {
@@ -146,7 +153,7 @@ button:active {
 }
 
 .animation_preview {
-    background-color: var(--c-darkest);
+    background-color: var(--c-p-background);
     height: calc( 100% - var(--h-prev) - var(--s-titlebar));
     max-width: calc( 100% - var(--pad) * 2 );
     margin-left: 50%;

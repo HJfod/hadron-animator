@@ -6,6 +6,6 @@
     "\\scripts\\backend",
     "\\scripts\\frontend"
   ],
-  "SelectedNode": "\\package.json",
+  "SelectedNode": "\\scripts\\frontend\\main.js",
   "PreviewInSolutionExplorer": false
 }
