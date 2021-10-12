@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/HJfod/hadron-animator#readme",
   "dependencies": {
-    "electron": "^8.2.0"
+    "electron": "^11.5.0"
   }
 }
